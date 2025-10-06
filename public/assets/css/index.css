@@ -1,0 +1,121 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  line-height: 1.2rem;
+}
+
+/* primary styles */
+
+.main-body {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.bottom-nav {
+  bottom: 0;
+  box-shadow: 0 2px 5px #00000080;
+
+  z-index: 100;
+  /* background-color: #f4f4f4; */
+  background: #ffffff;
+}
+
+@media screen and (min-width: 576px) {
+  .main-body {
+    width: 500px;
+    margin: 0 auto;
+    box-shadow: 0 2px 5px #00000080;
+    border-radius: 5px;
+    min-height: 100vh;
+  }
+
+  .bottom-nav {
+    max-width: 500px;
+    margin: 0 auto;
+    bottom: 0;
+    box-shadow: 0 2px 5px #00000080;
+
+    z-index: 100;
+    /* background-color: #f4f4f4; */
+    background: #ffffff;
+  }
+}
+
+/*  */
+
+.text-sm {
+  font-size: 0.7rem;
+}
+
+.compass {
+  transform: rotate(180deg) translate(50%, 50%);
+}
+
+.space-y-1 > * {
+  padding: 4px 0;
+}
+
+p {
+  margin-bottom: 0.3rem !important;
+}
+
+.level-container {
+    background-image: url("../images/partials/background.png");
+    min-height: 100vh;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.level-container .my-level {
+    left: 20px;
+    top: 10px;
+}
+
+.nav-icon-active {
+    color: black;
+    font-weight: bold;
+}
+.nav-icon-inactive {
+    color: gray;
+}
+
+.gift-container {
+    background-image: url("../images/partials/bg-10.jpg");
+    min-height: 100vh;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    position: "relative";
+}
+.gift-container .gift-items {
+    display: flex;
+    gap: "20px";
+}
+.gift-container .gift-box {
+    cursor: pointer;
+    position: relative;
+}
+.gift-container .gift-box img {
+    width: 150px;
+}
+
+.gift-container .active-gift .gift-body {
+    border: 5px solid #ff6055;
+    border-radius: 2rem;
+}
+
+.gift-container h5 {
+    display: none;
+}
+
+.gift-container .active-gift h5 {
+    display: block;
+    position: absolute;
+    top: -50px;
+    left: 0;
+    color: #ff6055;
+}
