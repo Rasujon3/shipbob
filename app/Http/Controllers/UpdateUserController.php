@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignedTrialTask;
 use App\Models\Country;
 use App\Models\Product;
+use App\Models\TrialTask;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -255,23 +257,36 @@ class UpdateUserController extends Controller
     }
     public function userStatusUpdate(Request $request)
     {
+        DB::beginTransaction();
         try
         {
             $user = User::findorfail($request->user_id);
             $user->status = $request->status;
             $user->update();
 
-//            $notification=array(
-//                'message' => 'User status updated successfully.',
-//                'alert-type' => 'success',
-//            );
-//            return redirect()->route('updateUser.index')->with($notification);
+            $existingAssignedTask = AssignedTrialTask::where('user_id', $user->id)->first();
+            if (!$existingAssignedTask) {
+                $trialTaskInfo = TrialTask::first();
+
+                $assignLevel = new AssignedTrialTask();
+                $assignLevel->user_id = $user->id;
+                $assignLevel->trial_task_id = $request->trial_task_id;
+                $assignLevel->num_of_tasks = ($trialTaskInfo && $trialTaskInfo->num_of_task) ? $trialTaskInfo->num_of_task : 0;
+                $assignLevel->status = 'pending';
+                $assignLevel->save();
+
+                $user->balance = $trialTaskInfo->trial_balance;
+                $user->update();
+            }
+
+            DB::commit();
+
             return response()->json([
                 'status'=>true,
                 'message'=>"User status updated successfully."
             ]);
-        }catch(Exception $e) {
-            DB::rollback();
+        } catch(Exception $e) {
+            DB::rollBack();
             // Log the error
             Log::error('Error in updating user: ', [
                 'message' => $e->getMessage(),
@@ -280,11 +295,6 @@ class UpdateUserController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-//            $notification=array(
-//                'message' => 'Something went wrong!!!',
-//                'alert-type' => 'error'
-//            );
-//            return redirect()->back()->with($notification);
             return response()->json([
                 'status'=>false,
                 'message'=>"Something went wrong!!!"
