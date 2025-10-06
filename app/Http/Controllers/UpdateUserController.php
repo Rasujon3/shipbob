@@ -115,7 +115,8 @@ class UpdateUserController extends Controller
                             if ($request->has('search') && $request->search['value'] !== '') {
                                 $searchValue = $request->search['value'];
                                 $query->where(function($q) use ($searchValue) {
-                                    $q->where('name', 'like', "%{$searchValue}%")
+                                    $q->where('username', 'like', "%{$searchValue}%")
+                                        ->orWhere('phone', 'like', "%{$searchValue}%")
                                         ->orWhere('uid', 'like', "%{$searchValue}%");
                                 });
                             }
@@ -186,11 +187,15 @@ class UpdateUserController extends Controller
     }
     public function show(User $updateUser)
     {
+        return view('admin.users.view', compact('updateUser'));
+    }
+    public function edit(User $updateUser)
+    {
         return view('admin.users.edit', compact('updateUser'));
     }
-    public function edit(Product $product)
+    public function withdrawPasswordEdit(User $updateUser)
     {
-        //
+        return view('admin.users.withdrawPasswordEdit', compact('updateUser'));
     }
     public function update(Request $request, User $updateUser)
     {
@@ -209,6 +214,44 @@ class UpdateUserController extends Controller
 
             $notification = [
                 'message' => 'Login password has been changed successfully.',
+                'alert-type' => 'success'
+            ];
+
+            return redirect()->route('updateUser.index')->with($notification);
+
+        } catch(Exception $e) {
+            // Log the error
+            Log::error('Error in updating user: ', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            $notification=array(
+                'message' => 'Something went wrong!!!',
+                'alert-type' => 'error'
+            );
+            return redirect()->back()->with($notification);
+        }
+    }
+    public function withdrawPasswordUpdate(Request $request, User $updateUser)
+    {
+        $request->validate([
+            'new_withdraw_password' => 'required|min:6|confirmed',
+        ], [
+            'new_withdraw_password.required' => 'New withdraw Password is required.',
+            'new_withdraw_password.min' => 'New withdraw Password required minimum 6 characters.',
+            'new_withdraw_password.confirmed' => 'New withdraw Password does not match.',
+        ]);
+        try
+        {
+
+            $updateUser->withdraw_password = $request->new_withdraw_password;
+            $updateUser->save();
+
+            $notification = [
+                'message' => 'Withdraw password has been changed successfully.',
                 'alert-type' => 'success'
             ];
 

@@ -130,6 +130,10 @@ Route::middleware('admin_auth')->group(function () {
     // users
     Route::resource('updateUser', UpdateUserController::class);
     Route::post('user-status-update', [UpdateUserController::class, 'userStatusUpdate']);
+    Route::get('/updateUser/{updateUser}/withdraw-password-edit', [UpdateUserController::class, 'withdrawPasswordEdit'])->name('updateUser.withdraw-password-edit');
+    Route::patch('/updateUser/{updateUser}/withdraw-password-update', [UpdateUserController::class, 'withdrawPasswordUpdate'])
+        ->name('updateUser.withdraw-password-update');
+
 
     // Help Center
     Route::resource('helpCenter', HelpCenterController::class);
