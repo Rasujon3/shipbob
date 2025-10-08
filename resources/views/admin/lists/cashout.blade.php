@@ -32,6 +32,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>UserName</th>
+                                <th>Phone</th>
                                 <th>Acc No</th>
                                 <th>Method</th>
                                 <th>Amount</th>
@@ -68,6 +69,7 @@
 		        columns: [
 		            {data: 'uuid', name: 'uuid'},
                     {data: 'user', name: 'user'},
+                    {data: 'phone', name: 'phone'},
                     {data: 'acc_no', name: 'acc_no'},
                     {data: 'method', name: 'method'},
                     {data: 'amount', name: 'amount'},

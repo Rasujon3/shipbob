@@ -9,6 +9,7 @@ use App\Models\Cashin;
 use App\Models\User;
 use DataTables;
 use DB;
+use Illuminate\Support\Facades\Log;
 
 class ListController extends Controller
 {
@@ -92,6 +93,12 @@ class ListController extends Controller
                             : 'N/A';
                     })
 
+                    ->addColumn('phone', function($row){
+                        return optional($row->user)->phone
+                            ? (string)($row->user->phone)
+                            : 'N/A';
+                    })
+
                     ->addColumn('acc_no', function($row){
                         return optional($row->paymentMethod)->account_number
                             ? $row->paymentMethod->account_number
@@ -142,7 +149,7 @@ class ListController extends Controller
                             });
                         }
                     })
-                    ->rawColumns(['action','status','user', 'method', 'acc_no'])
+                    ->rawColumns(['action','status','user', 'method', 'acc_no', 'phone'])
                     ->make(true);
         }
         return view('admin.lists.cashout');
@@ -216,6 +223,61 @@ class ListController extends Controller
             return response()->json(['status'=>true, 'message'=>'Successfully deleted']);
         }catch(Exception $e){
             return response()->json(['status'=>false, 'code'=>$e->getCode(), 'message'=>$e->getMessage()],500);
+        }
+    }
+    public function cashInCreate()
+    {
+        $users = User::where('role', 'user')
+            ->where('status', 'active')
+            ->latest()
+            ->get();
+
+        return view('admin.lists.create', compact('users'));
+    }
+    public function cashInStore(Request $request)
+    {
+        DB::beginTransaction();
+        try
+        {
+            $user = User::find($request->user_id);
+            $cash_in = new Cashin();
+            $cash_in->uuid = time().user()->id;
+            $cash_in->user_id = $user->id;
+            $cash_in->package_id = null;
+            $cash_in->bouns_amount = null;
+            $cash_in->amount = $request->cash_in_amount;
+            $cash_in->date = date('Y-m-d');
+            $cash_in->time = date('h:i:s a');
+            $cash_in->status = 'Approved';
+            $cash_in->save();
+
+            $user->main_balance = round($user->main_balance + $request->cash_in_amount, 2);
+            $user->update();
+
+            DB::commit();
+
+            $notification=array(
+                'message' => 'Successfully a Cash In has been added',
+                'alert-type' => 'success',
+            );
+
+            return redirect()->route('cashin-lists')->with($notification);
+
+        } catch(Exception $e) {
+            DB::rollback();
+            // Log the error
+            Log::error('Error in storing cashInStore: ', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            $notification=array(
+                'message' => 'Something went wrong!!!',
+                'alert-type' => 'error'
+            );
+            return redirect()->route('cashin-lists')->with($notification);
         }
     }
 }

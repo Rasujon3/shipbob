@@ -506,10 +506,13 @@ class UserController extends Controller
     }
     public function cashIn()
     {
+        /*
         $user = User::with('paymentmethod')->find(user()->id);
         $packages = Package::get();
         $img = CashInImg::first();
         return view('user.profile.cashIn', compact('user','packages', 'img'));
+        */
+        return redirect()->route('user-technical-support');
     }
     public function accountDetails()
     {

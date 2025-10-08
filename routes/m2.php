@@ -45,6 +45,8 @@ Route::middleware('user_auth')->group(function () {
 Route::middleware('admin_auth')->group(function () {
   Route::get('/cashin-lists', [ListController::class, 'cashinLists'])->name('cashin-lists');
   Route::get('/cashout-lists', [ListController::class, 'cashoutLists'])->name('cashout-lists');
+  Route::get('/cash-in-create', [ListController::class, 'cashInCreate'])->name('cash-in-create');
+  Route::post('/cash-in-store', [ListController::class, 'cashInStore'])->name('cash-in-store');
 });
 
 //ajax requests

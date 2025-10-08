@@ -26,6 +26,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
+                <a href="{{route('cash-in-create')}}" class="btn btn-primary add-new mb-2">Add Cash In</a>
                 <div class="fetch-data table-responsive">
                     <table id="co-table" class="table table-bordered table-striped data-table">
                         <thead>
@@ -37,9 +38,9 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody class="conts"> 
+                        <tbody class="conts">
                         </tbody>
-                    </table> 
+                    </table>
                 </div>
             </div>
         </div>
@@ -48,7 +49,7 @@
 @endsection
 
 @push('scripts')
-  
+
   <script>
   	$(document).ready(function(){
   		let ci_id;
@@ -65,7 +66,7 @@
 
 		        columns: [
 		            {data: 'uuid', name: 'uuid'},
-                    {data: 'user', name: 'user'}, 
+                    {data: 'user', name: 'user'},
                     {data: 'amount', name: 'amount'},
 		            {data: 'status', name: 'status'},
 		            {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -79,7 +80,7 @@
 	         ci_id = $(this).data('id');
 	         //alert()
 	         var isCiChecked = $(this).prop('checked');
-	         var status_val = isCiChecked ? 'Approved' : 'Pending'; 
+	         var status_val = isCiChecked ? 'Approved' : 'Pending';
               var user_id = "{{user()->id}}";
 	         $.ajax({
 
@@ -95,9 +96,9 @@
                         $('.data-table').DataTable().ajax.reload(null, false);
 
                 },
-	                            
+
 	        });
-       }); 
+       });
 
 
        $(document).on('click', '.delete-cashin', function(e){
@@ -121,7 +122,7 @@
                             $('.data-table').DataTable().ajax.reload(null, false);
 
                     },
-                                
+
               });
            }
 
