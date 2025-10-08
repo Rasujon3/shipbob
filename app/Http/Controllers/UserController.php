@@ -138,7 +138,18 @@ class UserController extends Controller
         $orderedProductIds = $completedOrders->pluck('product_id')->toArray();
 
         // Pending products (not ordered yet)
-        $pendingProducts = Product::whereNotIn('id', $orderedProductIds)->latest()->limit(1)->get();
+        $pendingProducts = [];
+        $isIncompleteTrialTask = AssignedTrialTask::where('user_id', Auth::user()->id)
+            ->where('status', 'pending')
+            ->exists();
+
+        $isIncompleteTask = AssignTask::where('user_id', Auth::user()->id)
+            ->where('is_completed', false)
+            ->exists();
+
+        if ($isIncompleteTrialTask || $isIncompleteTask) {
+            $pendingProducts = Product::whereNotIn('id', $orderedProductIds)->latest()->limit(1)->get();
+        }
 
         // Task count
         $totalTaskCount = 0;
