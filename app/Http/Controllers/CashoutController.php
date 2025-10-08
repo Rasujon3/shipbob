@@ -40,36 +40,6 @@ class CashoutController extends Controller
             return redirect()->route('user-profile')->with($notification);
         }
 
-        $incompleteTrialTask = false;
-        $incompleteTask = false;
-
-        $incompleteTrialTask = AssignedTrialTask::where('user_id', Auth::user()->id)
-            ->where('status', '!=', 'completed')
-            ->exists();
-
-        $incompleteTask = AssignTask::where('user_id', Auth::user()->id)
-            ->where('is_completed', '!=', true)
-            ->exists();
-
-        if($incompleteTrialTask || $incompleteTask) {
-            $notification = [
-                'message' => 'You have some incomplete tasks. Please complete them before making a withdrawal.',
-                'alert-type' => 'error'
-            ];
-
-            return redirect()->route('user-profile')->with($notification);
-        }
-
-        // Daily order completed count check
-        $dailyOrderCount = Order::where('user_id', Auth::user()->id)
-            ->whereDate('completed_at', now()->toDateString())
-            ->count();
-        $settings = Setting::first();
-
-        if($dailyOrderCount < $settings->daily_task_limit) {
-            return response()->json([ 'status'=>false, 'message'=> "Need Daily Complete Minimum {$settings->daily_task_limit} Tasks for Withdraw." ]);
-        }
-
         $user = User::findorfail(Auth::user()->id);
         $payment_methods = Paymentmethod::where('user_id',$user->id)->get();
         $img = CashInImg::first();

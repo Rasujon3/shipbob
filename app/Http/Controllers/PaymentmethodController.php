@@ -169,9 +169,17 @@ class PaymentmethodController extends Controller
                                     ->whereDate('completed_at', now()->toDateString())
                                     ->count();
             $settings = Setting::first();
-            if($dailyOrderCount < $settings->daily_task_limit) {
-                return response()->json([ 'status'=>false, 'message'=> "Need Daily Complete Minimum {$settings->daily_task_limit} Tasks for Withdraw." ]);
+            $trialTaskCompleted = AssignedTrialTask::where('user_id', $user->id)
+                                        ->where('status', 'completed')
+                                        ->exists();
+
+            $assignedTask = AssignTask::where('user_id', $user->id)->exists();
+            if ($trialTaskCompleted && $assignedTask) {
+                if($dailyOrderCount < $settings->daily_task_limit) {
+                    return response()->json([ 'status'=>false, 'message'=> "Need Daily Complete Minimum {$settings->daily_task_limit} Tasks for Withdraw." ]);
+                }
             }
+
             return response()->json(['status'=>true, 'message'=>'The withdraw password is right']);
         }catch(Exception $e){
             return response()->json(['status'=>false, 'code'=>$e->getCode(), 'message'=>$e->getMessage()],500);
