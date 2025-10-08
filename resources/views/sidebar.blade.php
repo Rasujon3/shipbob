@@ -434,6 +434,30 @@
 
                     </ul>
                 </li>
+                <li class="nav-item {{ Request::is('credits*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Credit
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('credits.create') }}" class="nav-link {{ request()->routeIs('credits.create') ? 'active_nav_menu' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Assign Credit</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('credits.index') }}" class="nav-link {{ request()->routeIs('credits.index') ? 'active_nav_menu' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>All Credit</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
 
                 <li class="nav-header">PAGE CONTENTS</li>
                 <li class="nav-item {{ Request::is('home-page*') ? 'menu-open' : '' }}">
