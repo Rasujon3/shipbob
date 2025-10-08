@@ -17,5 +17,6 @@ class Setting extends Model
         'telegram_group_link',
         'company_name',
         'company_logo',
+        'daily_task_limit',
     ];
 }

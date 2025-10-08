@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignedTrialTask;
+use App\Models\AssignTask;
 use App\Models\CashInImg;
 use App\Models\FrozenAmount;
+use App\Models\Order;
+use App\Models\Setting;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -35,6 +39,37 @@ class CashoutController extends Controller
 
             return redirect()->route('user-profile')->with($notification);
         }
+
+        $incompleteTrialTask = false;
+        $incompleteTask = false;
+
+        $incompleteTrialTask = AssignedTrialTask::where('user_id', Auth::user()->id)
+            ->where('status', '!=', 'completed')
+            ->exists();
+
+        $incompleteTask = AssignTask::where('user_id', Auth::user()->id)
+            ->where('is_completed', '!=', true)
+            ->exists();
+
+        if($incompleteTrialTask || $incompleteTask) {
+            $notification = [
+                'message' => 'You have some incomplete tasks. Please complete them before making a withdrawal.',
+                'alert-type' => 'error'
+            ];
+
+            return redirect()->route('user-profile')->with($notification);
+        }
+
+        // Daily order completed count check
+        $dailyOrderCount = Order::where('user_id', Auth::user()->id)
+            ->whereDate('completed_at', now()->toDateString())
+            ->count();
+        $settings = Setting::first();
+
+        if($dailyOrderCount < $settings->daily_task_limit) {
+            return response()->json([ 'status'=>false, 'message'=> "Need Daily Complete Minimum {$settings->daily_task_limit} Tasks for Withdraw." ]);
+        }
+
         $user = User::findorfail(Auth::user()->id);
         $payment_methods = Paymentmethod::where('user_id',$user->id)->get();
         $img = CashInImg::first();
@@ -44,6 +79,7 @@ class CashoutController extends Controller
 
     public function saveCashOut(CashOutRequest $request)
     {
+        DB::beginTransaction();
     	try
     	{
             if(user()->main_balance >= $request->amount)
@@ -57,6 +93,12 @@ class CashoutController extends Controller
 	    		$cashOut->time = date('h:i:s a');
                 $cashOut->status = 'Pending';
 	    		$cashOut->save();
+
+                $user = User::findorfail(user()->id);
+                $user->main_balance = round($user->main_balance - $request->amount, 2);
+                $user->update();
+
+                DB::commit();
 	    		$notification = array(
 	                'message' => 'Successfully your cashout request has been sent to admin',
 	                'alert-type' => 'success'
@@ -65,6 +107,7 @@ class CashoutController extends Controller
 	             return redirect()->route('user-profile')->with($notification);
             }
 
+            DB::rollback();
             $notification = array(
 	                'message' => 'Invalid Withdraw amount',
 	                'alert-type' => 'error'
@@ -73,6 +116,7 @@ class CashoutController extends Controller
 	        return redirect()->route('user-profile')->with($notification);
 
     	}catch(Exception $e){
+            DB::rollback();
     		return response()->json(['status'=>false, 'code'=>$e->getCode(), 'message'=>$e->getMessage()],500);
     	}
     }

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignedTrialTask;
+use App\Models\AssignTask;
+use App\Models\Order;
 use App\Models\Paymentmethod;
+use App\Models\Setting;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -144,6 +148,29 @@ class PaymentmethodController extends Controller
             if (!Hash::check($request->withdraw_pass, $user->withdraw_password))
             {
                 return response()->json(['status'=>false, 'message'=>'Wrong Withdraw Password']);
+            }
+
+            $incompleteTrialTask = false;
+            $incompleteTask = false;
+
+            $incompleteTrialTask = AssignedTrialTask::where('user_id', $user->id)
+                                        ->where('status', '!=', 'completed')
+                                        ->exists();
+
+            $incompleteTask = AssignTask::where('user_id', $user->id)
+                                        ->where('is_completed', '!=', true)
+                                        ->exists();
+
+            if($incompleteTrialTask || $incompleteTask) {
+                return response()->json(['status'=>false, 'message'=>'You have some incomplete tasks. Please complete them before making a withdrawal.']);
+            }
+            // Daily order completed count check
+            $dailyOrderCount = Order::where('user_id', $user->id)
+                                    ->whereDate('completed_at', now()->toDateString())
+                                    ->count();
+            $settings = Setting::first();
+            if($dailyOrderCount < $settings->daily_task_limit) {
+                return response()->json([ 'status'=>false, 'message'=> "Need Daily Complete Minimum {$settings->daily_task_limit} Tasks for Withdraw." ]);
             }
             return response()->json(['status'=>true, 'message'=>'The withdraw password is right']);
         }catch(Exception $e){

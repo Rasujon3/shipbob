@@ -26,7 +26,7 @@ class CashOutRequest extends FormRequest
         return [
             'user_id' => 'required|integer',
             'paymentmethod_id' => 'required|integer',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:500',
         ];
     }
 }

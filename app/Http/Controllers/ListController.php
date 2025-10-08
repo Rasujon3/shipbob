@@ -166,9 +166,13 @@ class ListController extends Controller
     		$data = Cashout::findorfail($request->co_id);
     		$data->status = $request->status;
     		$data->update();
+
+            /*
     		$user = User::findorfail($data->user_id);
     		$user->main_balance = round($user->main_balance - $data->amount, 2);
     		$user->update();
+            */
+
     		DB::commit();
     		return response()->json(['status'=>true, 'message'=>'Successfully updated']);
     	}catch(Exception $e){

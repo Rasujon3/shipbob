@@ -34,6 +34,7 @@ class SettingController extends Controller
                 'telegram_group_link' => $data ? $data->telegram_group_link : null,
                 'company_name' => $data ? $data->company_name : null,
                 'img_url' => $data ? $data->company_logo : null,
+                'daily_task_limit' => $data ? $data->daily_task_limit : null,
             ];
 
             // Handle file upload
@@ -52,6 +53,7 @@ class SettingController extends Controller
                         'task_timing' => $request->task_timing ?? $defaults['task_timing'],
                         'telegram_group_link' => $request->telegram_group_link ?? $defaults['telegram_group_link'],
                         'company_name' => $request->company_name ?? $defaults['company_name'],
+                        'daily_task_limit' => $request->daily_task_limit ?? $defaults['daily_task_limit'],
                         'company_logo' => $request->hasFile('company_logo') ? $img_url : $defaults['img_url'],
                     ]
                 );
@@ -64,6 +66,7 @@ class SettingController extends Controller
                         'task_timing' => $request->task_timing ?? $defaults['task_timing'],
                         'telegram_group_link' => $request->telegram_group_link ?? $defaults['telegram_group_link'],
                         'company_name' => $request->company_name ?? $defaults['company_name'],
+                        'daily_task_limit' => $request->daily_task_limit ?? $defaults['daily_task_limit'],
                         'company_logo' => $request->hasFile('company_logo') ? $img_url : $defaults['img_url'],
                     ]
                 );

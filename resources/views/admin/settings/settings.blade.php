@@ -75,6 +75,26 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="daily_task_limit">Daily Task Limit (Per Day) <span class="required">*</span></label>
+                                <input
+                                    type="text"
+                                    name="daily_task_limit"
+                                    class="form-control numericInput"
+                                    id="daily_task_limit"
+                                    placeholder="Daily Task Limit (Per Day)"
+                                    required=""
+                                    value="{{ old('daily_task_limit', ($setting && $setting->daily_task_limit) ? $setting->daily_task_limit : "") }}"
+                                >
+                                @error('daily_task_limit')
+                                    <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group w-100">
                         <button type="submit" class="btn btn-success">Save Changes</button>
                     </div>
