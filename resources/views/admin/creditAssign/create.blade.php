@@ -6,13 +6,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Add Assign Credit</h1>
+                    <h1 class="m-0">Add Assign Task</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{URL::to('/dashboard')}}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{URL::to('/credit-assign')}}">All Assign Credit</a></li>
-                        <li class="breadcrumb-item active">Add Assign Credit</li>
+                        <li class="breadcrumb-item"><a href="{{URL::to('/task-assign')}}">All Assign Task</a></li>
+                        <li class="breadcrumb-item active">Add Assign Task</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -23,11 +23,11 @@
     <section class="content">
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">Add Assign Credit</h3>
+                <h3 class="card-title">Add Assign Task</h3>
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="{{ route('credit-assign.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('task-assign.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="row">
@@ -50,16 +50,16 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="credit_id">Select Credit <span class="required">*</span></label>
-                                <select class="form-control select2bs4" name="credit_id" id="credit_id" required="">
-                                    <option value="" selected="" disabled="">Select Credit</option>
-                                    @if(count($credits) > 0)
-                                        @foreach ($credits as $credit)
-                                            <option value="{{ $credit['id'] }}">{{ $credit['title'] }}</option>
+                                <label for="task_id">Select Task <span class="required">*</span></label>
+                                <select class="form-control select2bs4" name="task_id" id="task_id" required="">
+                                    <option value="" selected="" disabled="">Select Task</option>
+                                    @if(count($tasks) > 0)
+                                        @foreach ($tasks as $task)
+                                            <option value="{{ $task['id'] }}">{{ $task['title'] }}</option>
                                         @endforeach
                                     @endif
                                 </select>
-                                @error('credit_id')
+                                @error('task_id')
                                 <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
                             </div>

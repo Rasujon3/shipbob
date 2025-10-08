@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BonusController;
 use App\Http\Controllers\BonusReasonController;
+use App\Http\Controllers\CreditAssignController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FrozenAmountController;
@@ -163,6 +164,9 @@ Route::middleware('admin_auth')->group(function () {
 
     // Credit
     Route::resource('credits', CreditController::class);
+
+    // Credit Assign
+    Route::resource('credit-assign', CreditAssignController::class);
 });
 
 // user part

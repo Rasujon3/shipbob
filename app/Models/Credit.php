@@ -24,4 +24,9 @@ class Credit extends Model
             'file' => 'nullable|file',
         ];
     }
+
+    public function assignCredit()
+    {
+        return $this->hasMany(AssignCredit::class, 'credit_id');
+    }
 }

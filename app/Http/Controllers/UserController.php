@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AboutUs;
+use App\Models\AssignCredit;
 use App\Models\AssignedTrialTask;
 use App\Models\AssignTask;
 use App\Models\BonusHistroy;
@@ -211,7 +212,9 @@ class UserController extends Controller
     public function creditScore()
     {
         $rules = CreditRule::first();
-        return view('user.credit-score', compact('rules'));
+        $creditData = AssignCredit::with('credit')->where('user_id', Auth::user()->id)->first();
+//        dd($creditData->credit->img);
+        return view('user.credit-score', compact('rules', 'creditData'));
     }
     public function userLogin()
     {
