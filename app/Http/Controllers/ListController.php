@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCashInRequest;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Cashout;
@@ -234,7 +235,7 @@ class ListController extends Controller
 
         return view('admin.lists.create', compact('users'));
     }
-    public function cashInStore(Request $request)
+    public function cashInStore(StoreCashInRequest $request)
     {
         DB::beginTransaction();
         try
