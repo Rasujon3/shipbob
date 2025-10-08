@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="mt-5 pt-5 d-flex align-items-center justify-content-center" id="closeButton">
+        <div class="mt-2 d-flex align-items-center justify-content-center" id="closeButton">
             <iconify-icon
                 icon="zondicons:close-solid"
                 width="2em"
@@ -330,6 +330,28 @@
                     'opacity': '0.5'
                 });
             }
+            // ✅ 1. Close button click করলে শেষের gift box select হবে
+            $(document).on('click', '#closeButton', function() {
+                const lastBox = $('.gift-box').last();
+                if (lastBox.length > 0 && !lastBox.hasClass('disabled')) {
+                    const boxId = lastBox.data('box-id');
+                    selectGiftBox(boxId, null, lastBox);
+                }
+            });
+            // ✅ 2. Gift box এর বাইরের অংশে (background বা অন্য জায়গায়) click করলে শেষের gift box select হবে
+            $(document).on('click', function(e) {
+                // gift-box বা closeButton এ ক্লিক হলে return করবে (মানে কিছু করবে না)
+                if ($(e.target).closest('.gift-box').length > 0 || $(e.target).closest('#closeButton').length > 0) {
+                    return;
+                }
+
+                // অন্য যেকোনো জায়গায় ক্লিক করলে শেষের gift box select হবে
+                const lastBox = $('.gift-box').last();
+                if (lastBox.length > 0 && !lastBox.hasClass('disabled')) {
+                    const boxId = lastBox.data('box-id');
+                    selectGiftBox(boxId, null, lastBox);
+                }
+            });
         });
     </script>
 @endpush
