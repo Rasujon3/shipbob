@@ -6,6 +6,7 @@ use App\Http\Requests\FrozenAmountRequest;
 use App\Http\Requests\PackageRequest;
 use App\Models\AssignedTrialTask;
 use App\Models\FrozenAmount;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Exception;
@@ -55,6 +56,25 @@ class FrozenAmountController extends Controller
                             return $row->task_will_block;
                         })
 
+                        ->addColumn('commission', function($row){
+                            $commission = $row->value . ' ' . $row->unit;
+                            return $commission;
+                        })
+
+                        ->addColumn('status', function($row){
+                            $task_will_block = $row->task_will_block;
+                            $userId = $row->user->id;
+                            $completedTasksCount = Order::where('user_id', $userId)
+                                ->where('task_id', '!=', null)
+                                ->where('is_completed', false)
+                                ->count();
+                            $checked = $task_will_block == $completedTasksCount ? 'checked' : '';
+                            return '<label class="switch">
+//                                    <input class="decline-cashin" id="status-cashin-update" type="checkbox" ' . $checked . ' ' . 'disabled' . ' data-id="' . $row->id . '">
+//                                    <span class="slider round"></span>
+//                                </label>';
+                        })
+
                         ->addColumn('action', function($row){
 
                             $btn = "";
@@ -83,7 +103,7 @@ class FrozenAmountController extends Controller
                                 });
                             }
                         })
-                        ->rawColumns(['name', 'amount', 'task_will_block', 'action'])
+                        ->rawColumns(['name', 'amount', 'task_will_block', 'commission', 'status', 'action'])
                         ->make(true);
             }
 
@@ -105,11 +125,10 @@ class FrozenAmountController extends Controller
         DB::beginTransaction();
         try
         {
-
             $user = User::findorfail($request->user_id);
             // Check Trial Task Completed
             $assignedTrialTaskData = AssignedTrialTask::where('user_id', $request->user_id)->first();
-            if (!$assignedTrialTaskData || ($assignedTrialTaskData &&$assignedTrialTaskData->status === 'pending')) {
+            if (!$assignedTrialTaskData || ($assignedTrialTaskData && $assignedTrialTaskData->status === 'pending')) {
                 $userData = $user->username . ' (' . $user->uid . ')';
                 $notification = [
                     'message' => $userData . ' has not completed the trial task yet.',
@@ -123,6 +142,8 @@ class FrozenAmountController extends Controller
             $frozenAmount->user_id = $request->user_id;
             $frozenAmount->amount = $request->amount;
             $frozenAmount->task_will_block = $request->task_will_block;
+            $frozenAmount->value = $request->value;
+            $frozenAmount->unit = $request->unit;
             $frozenAmount->save();
 
             # $user->main_balance = $user->main_balance == NULL?$frozenAmount->amount:$user->main_balance+$frozenAmount->amount;

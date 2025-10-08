@@ -34,6 +34,8 @@
                                 <th>Name</th>
                                 <th>Amount</th>
                                 <th>No. of task will be blocked</th>
+                                <th>Commission</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -67,6 +69,8 @@
 		            {data: 'name', name: 'name'},
                     {data: 'amount', name: 'amount'},
                     {data: 'task_will_block', name: 'task_will_block'},
+                    {data: 'commission', name: 'commission'},
+                    {data: 'status', name: 'status'},
 		            {data: 'action', name: 'action', orderable: false, searchable: false},
 		        ]
         });

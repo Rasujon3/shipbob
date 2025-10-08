@@ -21,6 +21,8 @@ class FrozenAmount extends Model
             ],
             'amount' => 'required|numeric|min:1',
             'task_will_block' => 'required|numeric|min:1',
+            'value' => 'required|numeric|min:1',
+            'unit' => 'required|in:X,TAKA',
         ];
     }
 

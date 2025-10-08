@@ -69,10 +69,34 @@
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="form-group w-100 px-2">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Value <span class="required">*</span></label>
+                                <input
+                                    type="text"
+                                    name="value"
+                                    class="form-control numericInput"
+                                    placeholder="Enter value"
+                                    required
+                                    value="{{ old('value') }}"
+                                >
+                            </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Unit <span class="required">*</span></label>
+                                <select name="unit" class="form-control" required>
+                                    <option value="X">X</option>
+{{--                                    <option value="Taka">Taka</option>--}}
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group w-100 px-2">
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                     <!-- /.card-body -->
                 </div>

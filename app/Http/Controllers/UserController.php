@@ -110,6 +110,7 @@ class UserController extends Controller
         }
 
         // Check & Calculate Reserved Amount
+        $reserveData = null;
         $frozenData = FrozenAmount::where('user_id', Auth::user()->id)->first();
 
         if ($frozenData && $frozenData->task_will_block == $completedTaskCount) {
@@ -117,6 +118,7 @@ class UserController extends Controller
                 foreach ($user?->frozenAmount as $item) {
                     $number = (int) ($item?->amount ?? 0);
                     $frozenAmount += $number;
+                    $reserveData = $frozenData;
                 }
             }
         }
@@ -187,6 +189,7 @@ class UserController extends Controller
         $is_trial_task = !(count($assignTasks) > 0);
 
         return view('user.setoff', compact(
+            'reserveData',
             'frozenAmount',
             'orderCompletedCount',
             'commissionSum',

@@ -27,6 +27,9 @@
                     />
                     <p class="mt-2"><small>Price: ৳ {{ $product->price ?? '' }}</small></p>
                     <p><small>Commission: ৳ {{ $product->commission ?? '' }}</small></p>
+                    @if($reserveData)
+                        <p style="color: red">Congratulations, you got {{$reserveData->value}} {{$reserveData->unit}} Commission.</p>
+                    @endif
                     <p><small>Time: {{ now()->toDayDateTimeString() }}</small></p>
                     <button class="btn btn-primary w-100 order-btn" data-id="{{ $product->id }}">Pending Order</button>
                 </div>
