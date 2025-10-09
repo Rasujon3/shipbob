@@ -45,6 +45,10 @@ class CreditController extends Controller
                             return $row->title;
                         })
 
+                        ->addColumn('notice', function($row){
+                            return $row->notice;
+                        })
+
                         ->addColumn('img', function($row){
                             $url = asset($row->img);
                             return '<img src="' . $url . '" alt="Credit Image" style="height:60px;">';
@@ -64,7 +68,7 @@ class CreditController extends Controller
 
                             return $btn;
                         })
-                        ->rawColumns(['title','img','action'])
+                        ->rawColumns(['title','notice','img','action'])
                         ->make(true);
             }
 
@@ -89,6 +93,7 @@ class CreditController extends Controller
 
             $credit = new Credit();
             $credit->title = $request->title;
+            $credit->notice = $request->notice;
             $credit->img = $path;
             $credit->save();
 
@@ -137,6 +142,7 @@ class CreditController extends Controller
             }
 
             $credit->title = $request->title;
+            $credit->notice = $request->notice;
             $credit->img = $path;
             $credit->save();
 

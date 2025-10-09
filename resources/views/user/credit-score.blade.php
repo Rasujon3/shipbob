@@ -21,6 +21,7 @@
               />
               @endif
             </div>
+              <p class="text-center text-danger pb-2">{{ ($creditData && $creditData->credit->notice) ? $creditData->credit->notice : '' }}</p>
             <div class="px-4 pb-5 mb-5 transform: rotate(30deg)">
               {!! $rules->description ?? '' !!}
             </div>

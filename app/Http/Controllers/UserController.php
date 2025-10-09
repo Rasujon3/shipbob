@@ -213,7 +213,6 @@ class UserController extends Controller
     {
         $rules = CreditRule::first();
         $creditData = AssignCredit::with('credit')->where('user_id', Auth::user()->id)->first();
-//        dd($creditData->credit->img);
         return view('user.credit-score', compact('rules', 'creditData'));
     }
     public function userLogin()

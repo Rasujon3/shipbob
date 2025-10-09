@@ -13,6 +13,7 @@ class Credit extends Model
     {
         return [
             'title' => ['required', 'string', 'max:191'],
+            'notice' => ['required', 'string', 'max:191'],
             'file' => 'required|file',
         ];
     }
@@ -21,6 +22,7 @@ class Credit extends Model
     {
         return [
             'title' => ['required', 'string', 'max:191'],
+            'notice' => ['required', 'string', 'max:191'],
             'file' => 'nullable|file',
         ];
     }

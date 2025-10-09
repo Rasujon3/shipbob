@@ -32,6 +32,7 @@
                         <thead>
                             <tr>
                                 <th>Title</th>
+                                <th>Notice</th>
                                 <th>Image</th>
                                 <th>Action</th>
                             </tr>
@@ -64,6 +65,7 @@
 
 		        columns: [
 		            {data: 'title', name: 'title'},
+		            {data: 'notice', name: 'notice'},
                     {data: 'img', name: 'img'},
 		            {data: 'action', name: 'action', orderable: false, searchable: false},
 		        ]

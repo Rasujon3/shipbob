@@ -43,6 +43,16 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="notice">Notice <span class="required">*</span></label>
+                                <input type="text" name="notice" class="form-control" id="notice"
+                                    placeholder="Notice" required="" value="{{old('notice',$credit->notice)}}">
+                                @error('notice')
+                                    <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="col-md-12">
                             <div class="form-group">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignCredit;
 use App\Models\AssignedTrialTask;
 use App\Models\AssignTask;
 use App\Models\Order;
@@ -178,6 +179,15 @@ class PaymentmethodController extends Controller
                 if($dailyOrderCount < $settings->daily_task_limit) {
                     return response()->json([ 'status'=>false, 'message'=> "Need Daily Complete Minimum {$settings->daily_task_limit} Tasks for Withdraw." ]);
                 }
+            }
+
+            // Check Credit
+            $assignedCredit = AssignCredit::with('credit')
+                                ->where('user_id', $user->id)
+                                ->first();
+            if($assignedCredit) {
+                $message = $assignedCredit->credit?->notice ?? 'You have no credits available for withdrawal. Please contact support.';
+                return response()->json([ 'status' => false, 'message' => $message ]);
             }
 
             return response()->json(['status'=>true, 'message'=>'The withdraw password is right']);
