@@ -35,6 +35,8 @@
                                 <th>Task will block</th>
                                 <th>Frozen amount</th>
                                 <th>Frozen block</th>
+                                <th>Frozen Commission</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -69,6 +71,8 @@
                     {data: 'task_will_block', name: 'task_will_block'},
 		            {data: 'frozen_amounts', name: 'frozen_amounts'},
 		            {data: 'frozen_amount_task_will_block', name: 'frozen_amount_task_will_block'},
+		            {data: 'frozen_commission', name: 'frozen_commission'},
+		            {data: 'status', name: 'status'},
 		            {data: 'action', name: 'action', orderable: false, searchable: false},
 		        ]
         });

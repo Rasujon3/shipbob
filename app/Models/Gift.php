@@ -16,7 +16,9 @@ class Gift extends Model
         'user_id',
         'task_will_block',
         'frozen_amounts',
-        'frozen_amount_task_will_block'
+        'frozen_amount_task_will_block',
+        'frozen_value',
+        'frozen_unit'
     ];
 
     public static function rules($id = null)
@@ -31,6 +33,8 @@ class Gift extends Model
             'task_will_block' => 'required|numeric|min:1|max:999999',
             'frozen_amounts' => 'nullable|required_with:frozen_amount_task_will_block|numeric|min:1',
             'frozen_amount_task_will_block' => 'nullable|required_with:frozen_amounts|numeric|min:1|max:999999',
+            'frozen_value' => 'nullable|required_with:frozen_amounts|numeric|min:1|max:999999',
+            'frozen_unit' => 'nullable|required_with:frozen_amounts|string|in:Taka,X',
 
             // Gift boxes validation
             'gift_boxes' => 'required|array|min:1|max:3',

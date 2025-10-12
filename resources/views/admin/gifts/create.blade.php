@@ -83,6 +83,37 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Value </label>
+                                <input
+                                    type="text"
+                                    name="frozen_value"
+                                    class="form-control numericInput"
+                                    placeholder="Enter value"
+                                    value="{{ old('frozen_value') }}"
+                                >
+                                @error('frozen_value')
+                                <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Unit </label>
+                                <select name="frozen_unit" class="form-control" required>
+                                    <option value="X">X</option>
+                                    {{--                                    <option value="Taka">Taka</option>--}}
+                                </select>
+                                @error('frozen_unit')
+                                <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                    </div>
+
                     <h5 class="mt-4">Gift Box 1: </h5>
                     <div class="row">
                         {{-- Gift Box 1 --}}

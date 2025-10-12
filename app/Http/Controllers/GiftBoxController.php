@@ -6,6 +6,7 @@ use App\Http\Requests\GiftBoxRequest;
 use App\Models\AssignedTrialTask;
 use App\Models\Gift;
 use App\Models\GiftBox;
+use App\Models\Order;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -49,6 +50,25 @@ class GiftBoxController extends Controller
                         return $row->frozen_amount_task_will_block;
                     })
 
+                    ->addColumn('frozen_commission', function($row){
+                        $data = $row->frozen_value . ' ' . $row->frozen_unit;
+                        return $row->frozen_amounts ? $data : '';
+                    })
+
+                    ->addColumn('status', function($row){
+                        $task_will_block = $row->task_will_block;
+                        $userId = $row->user->id;
+                        $completedTasksCount = Order::where('user_id', $userId)
+                            #->where('task_id', '!=', null)
+                            ->where('is_completed', false)
+                            ->count();
+                        $checked = $task_will_block == $completedTasksCount ? 'checked' : '';
+                        return '<label class="switch">
+//                                    <input class="decline-cashin" id="status-cashin-update" type="checkbox" ' . $checked . ' ' . 'disabled' . ' data-id="' . $row->id . '">
+//                                    <span class="slider round"></span>
+//                                </label>';
+                    })
+
                     ->addColumn('action', function($row){
 
                         $btn = "";
@@ -81,7 +101,7 @@ class GiftBoxController extends Controller
                             });
                         }
                     })
-                    ->rawColumns(['name','task_will_block','frozen_amounts','frozen_amount_task_will_block','action'])
+                    ->rawColumns(['name','task_will_block','frozen_amounts','frozen_amount_task_will_block', 'frozen_commission','status', 'action'])
                     ->make(true);
             }
 
@@ -131,6 +151,8 @@ class GiftBoxController extends Controller
                 'task_will_block' => $request->task_will_block,
                 'frozen_amounts' => $request->frozen_amounts,
                 'frozen_amount_task_will_block' => $request->frozen_amount_task_will_block,
+                'frozen_value' => $request->frozen_value,
+                'frozen_unit' => $request->frozen_unit,
             ]);
 
             // Create gift boxes

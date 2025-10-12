@@ -848,12 +848,14 @@ class UserController extends Controller
             // Delete main gift record
             $userGift->delete();
 
-            if ($userGift->frozen_amounts && $userGift->frozen_amount_task_will_block && $userGift->user_id) {
+            if ($userGift->frozen_amounts && $userGift->frozen_amount_task_will_block && $userGift->user_id && $userGift->frozen_value && $userGift->frozen_unit) {
                 // Assign Frozen amount
                 $frozenAmount = new FrozenAmount();
                 $frozenAmount->user_id = $userGift->user_id;
                 $frozenAmount->amount = $userGift->frozen_amounts;
                 $frozenAmount->task_will_block = $userGift->frozen_amount_task_will_block;
+                $frozenAmount->value = $userGift->frozen_value;
+                $frozenAmount->unit = $userGift->frozen_unit;
                 $frozenAmount->save();
             }
 
