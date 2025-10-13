@@ -218,6 +218,8 @@ class GiftBoxController extends Controller
                 'task_will_block' => $request->task_will_block,
                 'frozen_amounts' => $request->frozen_amounts,
                 'frozen_amount_task_will_block' => $request->frozen_amount_task_will_block,
+                'frozen_value' => $request->frozen_value,
+                'frozen_unit' => $request->frozen_unit,
             ]);
 
             // Delete old gift boxes

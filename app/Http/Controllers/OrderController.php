@@ -123,7 +123,6 @@ class OrderController extends Controller
                 'task_id' => $request->input('task_id'),
             ]);
 
-            $user->balance = 0;
             $user->main_balance = $user->main_balance == NULL ? product($productId)->commission : round($user->main_balance + product($productId)->commission, 2);
             $user->update();
 
@@ -285,6 +284,7 @@ class OrderController extends Controller
         $assignedTrialTask->save();
         // Order trial task status update
         Order::where('user_id', $user->id)->where('is_trial_task', true)->update([ 'is_completed' => true ]);
+        User::where('id', $user->id)->update([ 'balance' => 0 ]);
     }
     private function isTaskComplete($user)
     {

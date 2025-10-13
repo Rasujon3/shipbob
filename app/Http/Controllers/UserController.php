@@ -488,7 +488,7 @@ class UserController extends Controller
                 ->limit(1)
                 ->get();
 
-            User::where('id', Auth::user()->id)->update(['balance' => 0]);
+            # User::where('id', Auth::user()->id)->update(['balance' => 0]);
 
             if ($checkTrialTaskAssign && $checkTrialTaskAssign->status !== 'completed') {
                 $checkTrialTaskAssign->started_at = Carbon::now();

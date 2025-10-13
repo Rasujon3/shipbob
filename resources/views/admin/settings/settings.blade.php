@@ -86,7 +86,7 @@
                                     id="daily_task_limit"
                                     placeholder="Daily Task Limit (Per Day)"
                                     required=""
-                                    value="{{ old('daily_task_limit', ($setting && $setting->daily_task_limit) ? $setting->daily_task_limit : "") }}"
+                                    value="{{ old('daily_task_limit', ($setting && $setting->daily_task_limit !== null) ? $setting->daily_task_limit : '') }}"
                                 >
                                 @error('daily_task_limit')
                                     <span class="alert alert-danger">{{ $message }}</span>
