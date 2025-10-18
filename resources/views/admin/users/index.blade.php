@@ -32,6 +32,8 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Location</th>
+                                <th>Total Trial Task</th>
+                                <th>Completed Trial Task</th>
                                 <th>Total Assigned Task</th>
                                 <th>Completed Task</th>
                                 <th>Remaining Task</th>
@@ -70,6 +72,8 @@
 		        columns: [
 		            {data: 'name', name: 'name'},
 		            {data: 'location', name: 'location'},
+		            {data: 'total_trial_task', name: 'total_trial_task'},
+		            {data: 'completed_trial_task', name: 'completed_trial_task'},
 		            {data: 'total_assigned_task', name: 'total_assigned_task'},
 		            {data: 'completed_task', name: 'completed_task'},
 		            {data: 'remaining_task', name: 'remaining_task'},

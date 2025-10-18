@@ -36,7 +36,7 @@ class UpdateUserController extends Controller
         {
             if($request->ajax()){
 
-               $data = User::with('assignTask', 'order')
+               $data = User::with('assignTask', 'order', 'trialTaskAssign')
                    ->where('role', 'user')
                    ->select('*')
                    ->latest();
@@ -47,6 +47,20 @@ class UpdateUserController extends Controller
                         ->addColumn('name', function($row){
                             $name = "$row->username ($row->uid)";
                             return $name;
+                        })
+
+                        ->addColumn('total_trial_task', function($row){
+                            $total = $row->trialTaskAssign?->num_of_tasks ?? 0;
+                            return $total;
+                        })
+
+                        ->addColumn('completed_trial_task', function($row){
+                            $completed = $row->order
+                                ->where('is_trial_task', true)
+                                ->where('task_id', null)
+                                # ->where('is_completed', true)
+                                ->count();
+                            return $completed;
                         })
 
                         ->addColumn('total_assigned_task', function($row){
@@ -125,6 +139,8 @@ class UpdateUserController extends Controller
                             'name',
                             'location',
                             'status',
+                            'total_trial_task',
+                            'completed_trial_task',
                             'total_assigned_task',
                             'completed_task',
                             'remaining_task',

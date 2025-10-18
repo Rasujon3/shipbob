@@ -128,4 +128,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(BonusHistroy::class);
     }
+    public function trialTaskAssign()
+    {
+        return $this->hasOne(AssignedTrialTask::class);
+    }
 }
