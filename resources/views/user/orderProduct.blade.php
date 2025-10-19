@@ -52,16 +52,29 @@
     <script>
         $(document).ready(function () {
             $('form').on('submit', function (e) {
+                e.preventDefault(); // Form immediate submit বন্ধ করো
                 const $form = $(this);
                 const $button = $form.find('button[type="submit"]');
 
-                if ($button.prop('disabled')) {
-                    e.preventDefault();
-                    return false;
-                }
+                // যদি ইতিমধ্যেই disable থাকে, কিছু করো না
+                if ($button.prop('disabled')) return false;
 
+                // Disable the button
                 $button.prop('disabled', true);
-                $button.text('Please wait...');
+                let countdown = 5;
+                const originalText = $button.text();
+
+                // Show countdown timer on button
+                const timer = setInterval(() => {
+                    $button.text(`Submitting in ${countdown}s...`);
+                    countdown--;
+
+                    if (countdown < 0) {
+                        clearInterval(timer);
+                        $button.text('Submitting...');
+                        $form.off('submit').submit(); // এখন আসল সাবমিট করো
+                    }
+                }, 1000);
             });
         });
     </script>
