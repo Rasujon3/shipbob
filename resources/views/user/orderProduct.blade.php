@@ -47,3 +47,23 @@
 
     </style>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (e) {
+                const $form = $(this);
+                const $button = $form.find('button[type="submit"]');
+
+                if ($button.prop('disabled')) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                $button.prop('disabled', true);
+                $button.text('Please wait...');
+            });
+        });
+    </script>
+@endpush
+
