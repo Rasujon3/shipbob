@@ -161,7 +161,7 @@ class CreditAssignController extends Controller
             ->get();
 
         $tasks = Task::latest()->get();
-        return view('admin.creditAssign.edit', compact('tasks', 'users', 'taskAssign'));
+        return view('admin.taskAssign.edit', compact('tasks', 'users', 'taskAssign'));
     }
     public function edit(AssignCredit $assignLevel)
     {
@@ -183,7 +183,7 @@ class CreditAssignController extends Controller
                 'alert-type'=>'success',
             );
 
-            return redirect()->route('credit-assign.index')->with($notification);
+            return redirect()->route('task-assign.index')->with($notification);
 
         } catch(Exception $e) {
             // Log the error

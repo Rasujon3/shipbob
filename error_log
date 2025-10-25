@@ -1,0 +1,7 @@
+[09-Oct-2025 13:37:57 Asia/Dhaka] PHP Fatal error:  Trait "Spatie\Permission\Traits\HasRoles" not found in /home/shipbobbooster/public_html/app/Models/User.php on line 18
+[09-Oct-2025 13:38:03 Asia/Dhaka] PHP Fatal error:  Trait "Spatie\Permission\Traits\HasRoles" not found in /home/shipbobbooster/public_html/app/Models/User.php on line 18
+[09-Oct-2025 13:38:19 Asia/Dhaka] PHP Fatal error:  Trait "Spatie\Permission\Traits\HasRoles" not found in /home/shipbobbooster/public_html/app/Models/User.php on line 18
+[09-Oct-2025 13:38:26 Asia/Dhaka] PHP Fatal error:  Trait "Spatie\Permission\Traits\HasRoles" not found in /home/shipbobbooster/public_html/app/Models/User.php on line 18
+[09-Oct-2025 13:38:45 Asia/Dhaka] PHP Fatal error:  Trait "Spatie\Permission\Traits\HasRoles" not found in /home/shipbobbooster/public_html/app/Models/User.php on line 18
+[09-Oct-2025 13:38:49 Asia/Dhaka] PHP Fatal error:  Trait "Spatie\Permission\Traits\HasRoles" not found in /home/shipbobbooster/public_html/app/Models/User.php on line 18
+[09-Oct-2025 13:38:52 Asia/Dhaka] PHP Fatal error:  Trait "Spatie\Permission\Traits\HasRoles" not found in /home/shipbobbooster/public_html/app/Models/User.php on line 18
