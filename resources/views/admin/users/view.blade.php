@@ -75,6 +75,47 @@
                             </p>
                         </div>
 
+                        <!-- Invitation Code -->
+                        <div class="col-md-6 mb-3">
+                            <label><strong>Invitation Code:</strong></label>
+                            <p class="form-control-plaintext border p-2 bg-light">
+                                {{ ($updateUser->invitation_code && $updateUser->inviteUser->user) ? $updateUser->invitation_code : 'N/A' }}
+                            </p>
+                        </div>
+
+                        <!-- Invited User -->
+                        <div class="col-md-6 mb-3">
+                            <label><strong>Invited User:</strong></label>
+                            <p class="form-control-plaintext border p-2 bg-light">
+                                {{ ($updateUser->invitation_code && $updateUser->inviteUser?->user)
+                                    ? $updateUser->inviteUser->user->username . ' (' . $updateUser->inviteUser->user->uid . ')'
+                                    : 'N/A'
+                                }}
+                            </p>
+                        </div>
+
+                        <!-- Reserved Amount -->
+                        <div class="col-md-6 mb-3">
+                            <label><strong>Reserved Amount:</strong></label>
+                            <p class="form-control-plaintext border p-2 bg-light">
+                                {{ ($updateUser->reserveAmount && $updateUser->reserveAmount?->amount)
+                                    ? $updateUser->reserveAmount?->amount . ' (' . $updateUser->reserveAmount?->value . $updateUser->reserveAmount?->unit . ')'
+                                    : 'N/A'
+                                }}
+                            </p>
+                        </div>
+
+                        <!-- Number of Task will be block -->
+                        <div class="col-md-6 mb-3">
+                            <label><strong>Number of Task will be block:</strong></label>
+                            <p class="form-control-plaintext border p-2 bg-light">
+                                {{ ($updateUser->reserveAmount && $updateUser->reserveAmount?->task_will_block)
+                                    ? $updateUser->reserveAmount?->task_will_block
+                                    : 'N/A'
+                                }}
+                            </p>
+                        </div>
+
                         <!-- Back Button -->
                         <div class="form-group w-100 px-2 mt-3">
                             <a href="{{ route('updateUser.index') }}" class="btn btn-secondary">

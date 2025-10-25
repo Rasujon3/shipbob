@@ -25,7 +25,8 @@
                 >
                     <div class="text-center">
                         <h6>My Account</h6>
-                        <p>৳ {{ Auth::user()->main_balance ?? '0' }}</p>
+{{--                        <p>৳ {{ Auth::user()->main_balance ?? '0' }}</p>--}}
+                        <p>৳ {{ $frozenAmount ? - $frozenAmount : Auth::user()->main_balance }}</p>
                     </div>
                 </div>
                 <div
@@ -41,7 +42,8 @@
                 >
                     <div class="text-center">
                         <h6>Reserved Amount</h6>
-                        <p>৳ {{ $frozenAmount ? - $frozenAmount : '0' }}</p>
+{{--                        <p>৳ {{ $frozenAmount ? - $frozenAmount : '0' }}</p>--}}
+                        <p>৳ {{ $frozenAmount ? (Auth::user()->main_balance + $frozenAmount) : '0' }}</p>
                     </div>
                 </div>
                 <div

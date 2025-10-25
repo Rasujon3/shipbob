@@ -132,4 +132,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(AssignedTrialTask::class);
     }
+    public function inviteUser()
+    {
+        return $this->hasOne(InvitationCode::class, 'code', 'invitation_code');
+    }
+    public function reserveAmount()
+    {
+        return $this->hasOne(FrozenAmount::class);
+    }
 }
