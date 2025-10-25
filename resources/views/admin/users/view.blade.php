@@ -79,7 +79,7 @@
                         <div class="col-md-6 mb-3">
                             <label><strong>Invitation Code:</strong></label>
                             <p class="form-control-plaintext border p-2 bg-light">
-                                {{ ($updateUser->invitation_code && $updateUser->inviteUser->user) ? $updateUser->invitation_code : 'N/A' }}
+                                {{ ($updateUser?->invitation_code && $updateUser?->inviteUser?->user) ? $updateUser?->invitation_code : 'N/A' }}
                             </p>
                         </div>
 
@@ -87,8 +87,8 @@
                         <div class="col-md-6 mb-3">
                             <label><strong>Invited User:</strong></label>
                             <p class="form-control-plaintext border p-2 bg-light">
-                                {{ ($updateUser->invitation_code && $updateUser->inviteUser?->user)
-                                    ? $updateUser->inviteUser->user->username . ' (' . $updateUser->inviteUser->user->uid . ')'
+                                {{ ($updateUser?->invitation_code && $updateUser?->inviteUser?->user)
+                                    ? $updateUser?->inviteUser?->user?->username . ' (' . $updateUser?->inviteUser?->user?->uid . ')'
                                     : 'N/A'
                                 }}
                             </p>
@@ -99,7 +99,7 @@
                             <label><strong>Reserved Amount:</strong></label>
                             <p class="form-control-plaintext border p-2 bg-light">
                                 {{ ($updateUser->reserveAmount && $updateUser->reserveAmount?->amount)
-                                    ? $updateUser->reserveAmount?->amount . ' (' . $updateUser->reserveAmount?->value . $updateUser->reserveAmount?->unit . ')'
+                                    ? $updateUser?->reserveAmount?->amount . ' (' . $updateUser?->reserveAmount?->value . $updateUser?->reserveAmount?->unit . ')'
                                     : 'N/A'
                                 }}
                             </p>
