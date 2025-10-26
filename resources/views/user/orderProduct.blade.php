@@ -18,14 +18,24 @@
                             <p><small>Time: {{ now()->toDayDateTimeString() }}</small></p>
                         </div>
 
-                        <form method="POST" action="{{ route('order.product') }}">
+                        <form method="POST" action="{{ route('order.product') }}" class="orderForm">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <input type="hidden" name="is_trial_task" value="{{ $is_trial_task }}">
                             <input type="hidden" name="task_id" value="{{ $task_id }}">
 
-                            <button type="submit" class="btn w-100 btn-dark" {{ $isOrdered ? 'disabled' : '' }}>
+                            <button
+                                type="submit"
+                                class="btn w-100 btn-dark submit-btn" {{ $isOrdered ? 'disabled' : '' }}
+                            >
                                 {{ $isOrdered ? 'Already Ordered' : 'Place Order' }}
+                            </button>
+
+                            <!-- 1st time hidden this button  -->
+                            <button type="button" class="btn w-100 btn-secondary waiting-btn d-none" disabled>
+                                Please wait...
+                                <span class="spinner-border spinner-border-sm"></span>
+                                <span class="countdown"></span>
                             </button>
                         </form>
                     </div>
@@ -49,33 +59,41 @@
 @endsection
 
 @push('scripts')
-<script>
-$(document).ready(function () {
-    $('form').on('submit', function (e) {
-        e.preventDefault(); // Form immediate submit stop
-        const $form = $(this);
-        const $button = $form.find('button[type="submit"]');
 
-        // if already disabled, nothing to do
-        if ($button.prop('disabled')) return false;
+    <script>
+        $(document).ready(function () {
+            $('.orderForm').on('submit', function (e) {
+                e.preventDefault();
 
-        // Disable the button
-        $button.prop('disabled', true);
-        let countdown = 2;
-        const originalText = $button.text();
+                const $form = $(this);
+                const $submitBtn = $form.find('.submit-btn');
+                const $waitingBtn = $form.find('.waiting-btn');
+                const $countdown = $waitingBtn.find('.countdown');
 
-        // Show countdown timer on button
-        const timer = setInterval(() => {
-            $button.text(`Submitting in ${countdown}s...`);
-            countdown--;
+                // prevent multiple clicks
+                if ($submitBtn.data('clicked')) return false;
+                $submitBtn.data('clicked', true);
 
-            if (countdown < 0) {
-                clearInterval(timer);
-                $button.text('Submitting...');
-                $form.off('submit').submit(); // now submit the form
-            }
-        }, 1000);
-    });
-});
-</script>
+                // hide submit, show waiting
+                $submitBtn.addClass('d-none');
+                $waitingBtn.removeClass('d-none');
+
+                let countdown = 2;
+                $countdown.text(`(${countdown}s)`);
+
+                const timer = setInterval(() => {
+                    countdown--;
+                    $countdown.text(`(${countdown}s)`);
+
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        $countdown.text('');
+                        // finally submit
+                        $form.off('submit').submit();
+                    }
+                }, 1000);
+            });
+        });
+    </script>
+
 @endpush
