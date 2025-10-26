@@ -143,6 +143,10 @@ class ListController extends Controller
                             $query->where(function($q) use ($searchValue) {
                                 $q->where('amount', 'like', "%{$searchValue}%")
                                     ->orWhere('uuid', 'like', "%{$searchValue}%")
+                                    ->orWhereHas('paymentMethod', function ($pq) use ($searchValue) {
+                                        $pq->where('account_number', 'like', "%{$searchValue}%")
+                                            ->orWhere('bank_name', 'like', "%{$searchValue}%");
+                                    })
                                     ->orWhereHas('user', function ($uq) use ($searchValue) {
                                         $uq->where('username', 'like', "%{$searchValue}%")
                                             ->orWhere('uid', 'like', "%{$searchValue}%");

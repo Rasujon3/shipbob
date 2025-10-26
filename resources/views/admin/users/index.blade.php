@@ -32,6 +32,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Location</th>
+                                <th>Phone</th>
                                 <th>Total Trial Task</th>
                                 <th>Completed Trial Task</th>
                                 <th>Total Assigned Task</th>
@@ -72,6 +73,7 @@
 		        columns: [
 		            {data: 'name', name: 'name'},
 		            {data: 'location', name: 'location'},
+		            {data: 'phone', name: 'phone'},
 		            {data: 'total_trial_task', name: 'total_trial_task'},
 		            {data: 'completed_trial_task', name: 'completed_trial_task'},
 		            {data: 'total_assigned_task', name: 'total_assigned_task'},

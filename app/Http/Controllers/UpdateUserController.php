@@ -138,6 +138,7 @@ class UpdateUserController extends Controller
                         ->rawColumns([
                             'name',
                             'location',
+                            'phone',
                             'status',
                             'total_trial_task',
                             'completed_trial_task',
