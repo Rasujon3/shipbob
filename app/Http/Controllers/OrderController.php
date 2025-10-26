@@ -11,6 +11,7 @@ use App\Models\Package;
 use App\Models\Product;
 use App\Models\TrialTask;
 use App\Models\User;
+use App\Models\WelcomeBonus;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
@@ -174,7 +175,13 @@ class OrderController extends Controller
 //
 //                return redirect()->route('user-setoff')->with($notification);
             }
+            $welcomeBonus = WelcomeBonus::where('user_id', $user->id)
+                ->where('status', 'Incomplete')
+                ->first();
 
+            if ($welcomeBonus) {
+                $this->updateWelcomeBonus($welcomeBonus);
+            }
 
             $message = $assignedTrialTask->status === 'completed' && $orderCompletedCount === $totalTaskCount ? 'Order placed successfully & complete the task.' : 'Order placed successfully.';
             $notification = array(
@@ -291,5 +298,23 @@ class OrderController extends Controller
         AssignTask::where('user_id', Auth::user()->id)->where('is_completed', false)->update(['is_completed' => true]);
         // Order task status update
         Order::where('user_id', $user->id)->where('is_trial_task', false)->update([ 'is_completed' => true ]);
+    }
+    private function updateWelcomeBonus($welcomeBonus)
+    {
+        $totalTasks = $welcomeBonus->num_of_tasks;
+        $prevCompletedTasks = $welcomeBonus->completed_tasks;
+
+        $newCompletedTasks = $prevCompletedTasks + 1;
+        $newRemainingTasks = $totalTasks - $newCompletedTasks;
+        $status = $newRemainingTasks == 0 ? 'Complete' : 'Incomplete';
+
+        WelcomeBonus::where('id', $welcomeBonus->id)
+            ->where('user_id', Auth::user()->id)
+            ->update([
+                'completed_tasks' => $newCompletedTasks,
+                'remaining_tasks' => $newRemainingTasks,
+                'status' => $status,
+            ]);
+
     }
 }

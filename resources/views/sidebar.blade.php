@@ -459,6 +459,37 @@
                     </ul>
                 </li>
 
+                <li class="nav-item {{ Request::is('welcome-bonuses*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Welcome Bonuses
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a
+                                href="{{ route('welcome-bonuses.create') }}"
+                                class="nav-link {{ request()->routeIs('welcome-bonuses.create') ? 'active_nav_menu' : '' }}"
+                            >
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Add Welcome Bonuses</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                href="{{ route('welcome-bonuses.index') }}"
+                                class="nav-link {{ request()->routeIs('welcome-bonuses.index') ? 'active_nav_menu' : '' }}"
+                            >
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>All Welcome Bonuses</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
                 <li class="nav-header">PAGE CONTENTS</li>
                 <li class="nav-item {{ Request::is('home-page*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">

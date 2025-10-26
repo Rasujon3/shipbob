@@ -24,6 +24,7 @@ use App\Http\Controllers\TrialTaskAssignController;
 use App\Http\Controllers\TrialTaskController;
 use App\Http\Controllers\UpdateUserController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WelcomeBonusController;
 use Illuminate\Support\Facades\Route;
 
 // Author: Sujon
@@ -167,6 +168,9 @@ Route::middleware('admin_auth')->group(function () {
 
     // Credit Assign
     Route::resource('credit-assign', CreditAssignController::class);
+
+    // Welcome Bonus
+    Route::resource('welcome-bonuses', WelcomeBonusController::class);
 });
 
 // user part

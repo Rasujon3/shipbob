@@ -8,6 +8,7 @@ use App\Models\AssignTask;
 use App\Models\Order;
 use App\Models\Paymentmethod;
 use App\Models\Setting;
+use App\Models\WelcomeBonus;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -190,8 +191,18 @@ class PaymentmethodController extends Controller
                 return response()->json([ 'status' => false, 'message' => $message ]);
             }
 
+            // Check Welcome Bonus
+            $welcomeBonus = WelcomeBonus::where('user_id', $user->id)
+                ->where('status', 'Incomplete')
+                ->first();
+
+            if($welcomeBonus) {
+                $message = "You got welcome bonus. For withdraw, you need to complete minimum {$welcomeBonus?->num_of_tasks} tasks for welcome bonus.";
+                return response()->json([ 'status' => false, 'message' => $message ]);
+            }
+
             return response()->json(['status'=>true, 'message'=>'The withdraw password is right']);
-        }catch(Exception $e){
+        } catch(Exception $e) {
             return response()->json(['status'=>false, 'code'=>$e->getCode(), 'message'=>$e->getMessage()],500);
         }
     }

@@ -52,16 +52,16 @@
 <script>
 $(document).ready(function () {
     $('form').on('submit', function (e) {
-        e.preventDefault(); // Form immediate submit বন্ধ করো
+        e.preventDefault(); // Form immediate submit stop
         const $form = $(this);
         const $button = $form.find('button[type="submit"]');
 
-        // যদি ইতিমধ্যেই disable থাকে, কিছু করো না
+        // if already disabled, nothing to do
         if ($button.prop('disabled')) return false;
 
         // Disable the button
         $button.prop('disabled', true);
-        let countdown = 5;
+        let countdown = 2;
         const originalText = $button.text();
 
         // Show countdown timer on button
@@ -72,7 +72,7 @@ $(document).ready(function () {
             if (countdown < 0) {
                 clearInterval(timer);
                 $button.text('Submitting...');
-                $form.off('submit').submit(); // এখন আসল সাবমিট করো
+                $form.off('submit').submit(); // now submit the form
             }
         }, 1000);
     });

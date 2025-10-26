@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignCredit;
 use App\Models\AssignedTrialTask;
 use App\Models\AssignTask;
 use App\Models\CashInImg;
 use App\Models\FrozenAmount;
 use App\Models\Order;
 use App\Models\Setting;
+use App\Models\WelcomeBonus;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -29,22 +31,109 @@ class CashoutController extends Controller
     }
     public function cashout(Request $request)
     {
-        // Calculate & check Reserved Amount
-        $frozenData = FrozenAmount::where('user_id', Auth::user()->id)->first();
-        if ($frozenData) {
+        try {
+            $user = User::findorfail(Auth::user()->id);
+
+            // Calculate & check Reserved Amount
+            $frozenData = FrozenAmount::where('user_id', Auth::user()->id)->first();
+            if ($frozenData) {
+                $notification = [
+                    'message' => 'Insufficient balance. Please contact with support team.',
+                    'alert-type' => 'error'
+                ];
+
+                return redirect()->route('user-profile')->with($notification);
+            }
+
+            $incompleteTrialTask = false;
+            $incompleteTask = false;
+
+            $incompleteTrialTask = AssignedTrialTask::where('user_id', $user->id)
+                ->where('status', '!=', 'completed')
+                ->exists();
+
+            $incompleteTask = AssignTask::where('user_id', $user->id)
+                ->where('is_completed', '!=', true)
+                ->exists();
+
+            if($incompleteTrialTask || $incompleteTask) {
+                $notification = [
+                    'message' => 'You have some incomplete tasks. Please complete them before making a withdrawal.',
+                    'alert-type' => 'error'
+                ];
+
+                return redirect()->route('user-profile')->with($notification);
+            }
+            // Daily order completed count check
+            $dailyOrderCount = Order::where('user_id', $user->id)
+                ->whereDate('completed_at', now()->toDateString())
+                ->count();
+            $settings = Setting::first();
+            $trialTaskCompleted = AssignedTrialTask::where('user_id', $user->id)
+                ->where('status', 'completed')
+                ->exists();
+
+            $assignedTask = AssignTask::where('user_id', $user->id)->exists();
+            if ($trialTaskCompleted && $assignedTask) {
+                if($dailyOrderCount < $settings->daily_task_limit) {
+                    $notification = [
+                        'message' => "Need Daily Complete Minimum {$settings->daily_task_limit} Tasks for Withdraw.",
+                        'alert-type' => 'error'
+                    ];
+
+                    return redirect()->route('user-profile')->with($notification);
+                }
+            }
+
+            // Check Credit
+            $assignedCredit = AssignCredit::with('credit')
+                ->where('user_id', $user->id)
+                ->first();
+            if($assignedCredit) {
+                $message = $assignedCredit->credit?->notice ?? 'You have no credits available for withdrawal. Please contact support.';
+                $notification = [
+                    'message' => $message,
+                    'alert-type' => 'error'
+                ];
+
+                return redirect()->route('user-profile')->with($notification);
+            }
+
+            // Check Welcome Bonus
+            $welcomeBonus = WelcomeBonus::where('user_id', $user->id)
+                ->where('status', 'Incomplete')
+                ->first();
+
+            if($welcomeBonus) {
+                $message = "You got welcome bonus. For withdraw, you need to complete minimum {$welcomeBonus?->num_of_tasks} tasks for welcome bonus.";
+                $notification = [
+                    'message' => $message,
+                    'alert-type' => 'error'
+                ];
+
+                return redirect()->route('user-profile')->with($notification);
+            }
+
+            $payment_methods = Paymentmethod::where('user_id',$user->id)->get();
+            $img = CashInImg::first();
+
+            return view('user.cashout', compact('user','payment_methods', 'img'));
+        } catch (Exception $e) {
+                // Log the error
+                Log::error('Error in cashout : ', [
+                    'message' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+
             $notification = [
-                'message' => 'Insufficient balance. Please contact with support team.',
+                'message' => 'Something went wrong!!!',
                 'alert-type' => 'error'
             ];
 
             return redirect()->route('user-profile')->with($notification);
         }
-
-        $user = User::findorfail(Auth::user()->id);
-        $payment_methods = Paymentmethod::where('user_id',$user->id)->get();
-        $img = CashInImg::first();
-
-        return view('user.cashout', compact('user','payment_methods', 'img'));
     }
 
     public function saveCashOut(CashOutRequest $request)

@@ -78,7 +78,7 @@
 
 
                <div class="form-group">
-                   <label for="amount" class="my-2"><span style="font-weight: bold;">Amount:</span> (Minimum cashout limit 500 BDT)</label>
+                   <label for="amount" class="my-2"><span style="font-weight: bold;">Amount:</span> <span style="color: red;">(Minimum cashout limit 500 BDT)</span></label>
                	 <input type="text" class="form-control my-2" id="amount" name="amount" placeholder="Amount" value="{{old('amount')}}">
                    @error('amount')
                    <span class="text-danger">{{ $message }}</span>
