@@ -231,9 +231,11 @@ class WelcomeBonusController extends Controller
             $user->update();
 
             // 2nd Bonus History delete
+            /*
             $bonusHistory = BonusHistroy::where('title', 'Welcome Bonus')
                 ->where('user_id', $welcomeBonus->user_id)
                 ->delete();
+            */
 
             // 3rd Welcome Bonus delete
             $welcomeBonus->delete();

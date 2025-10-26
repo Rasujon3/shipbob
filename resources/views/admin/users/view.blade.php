@@ -54,8 +54,15 @@
                         <!-- Title -->
                         <div class="col-md-6 mb-3">
                             <label for="title"><strong>Withdraw Acc. No:</strong></label>
-                            <p class="form-control-plaintext border p-2 bg-light">{{ $updateUser->withdraw_acc_number ?? 'N/A' }}</p>
+                            <p class="form-control-plaintext border p-2 bg-light">{{ $updateUser?->paymentmethod?->account_number ?? 'N/A' }}</p>
                         </div>
+
+                        <!-- Title -->
+                        <div class="col-md-6 mb-3">
+                            <label for="title"><strong>Withdraw Method:</strong></label>
+                            <p class="form-control-plaintext border p-2 bg-light">{{ $updateUser?->paymentmethod?->bank_name ?? 'N/A' }}</p>
+                        </div>
+
                         <!-- Title -->
                         <div class="col-md-6 mb-3">
                             <label for="title"><strong>Balance:</strong></label>

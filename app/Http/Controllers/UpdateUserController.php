@@ -110,15 +110,16 @@ class UpdateUserController extends Controller
                             return '<label class="switch"><input class="' . ($row->status === 'Active' ? 'active-user' : 'decline-user') . '" id="status-user-update"  type="checkbox" ' . ($row->status === 'Active' ? 'checked' : '') . ' data-id="'.$row->id.'"><span class="slider round"></span></label>';
                         })
 
-                        ->addColumn('action', function($row){
+                        ->addColumn('action', function($row) {
 
                            $btn = "";
-                           $btn .= '&nbsp;';
+                           # $btn .= '&nbsp;';
+
+                           $btn .= '<a href="#" class="btn btn-info btn-sm view-data" data-id="'.$row->id.'"><i class="fa fa-eye"></i></a>';
 
                            $btn .= ' <a href="'.route('updateUser.show',$row->id).'" class="btn btn-primary btn-sm action-button edit-product" data-id="'.$row->id.'"><i class="fa fa-edit"></i></a>';
 
                             # $btn .= '&nbsp;';
-
 
                             # $btn .= ' <a href="#" class="btn btn-danger btn-sm delete-product action-button" data-id="'.$row->id.'"><i class="fa fa-trash"></i></a>';
 
@@ -204,6 +205,9 @@ class UpdateUserController extends Controller
     }
     public function show(User $updateUser)
     {
+        if (request()?->ajax()) {
+            return view('admin.users.view-modal', compact('updateUser'))->render();
+        }
         return view('admin.users.view', compact('updateUser'));
     }
     public function edit(User $updateUser)

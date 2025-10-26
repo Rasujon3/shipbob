@@ -49,6 +49,16 @@
             </div>
         </div>
     </section>
+
+    <!-- User View Modal -->
+    <div class="modal fade" id="userViewModal" tabindex="-1" aria-labelledby="userViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" id="userViewModalContent">
+
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -131,7 +141,24 @@
             });
         });
 
-  	});
+        $(document).on('click', '.view-data', function(e) {
+            e.preventDefault();
+            let userId = $(this).data('id');
+
+            $.ajax({
+                url: "{{ url('/updateUser') }}/" + userId,
+                type: 'GET',
+                success: function(response) {
+                    $('#userViewModalContent').html(response);
+                    $('#userViewModal').modal('show');
+                },
+                error: function() {
+                    alert('Failed to load user details.');
+                }
+            });
+        });
+
+    });
   </script>
 
 @endpush
