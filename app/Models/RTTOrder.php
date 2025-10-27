@@ -21,6 +21,13 @@ class RTTOrder extends Model
         'completed_at',
     ];
 
+    public static function rules()
+    {
+        return [
+            'product_id' => 'required|integer|exists:r_t_t_products,id',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

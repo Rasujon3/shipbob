@@ -18,7 +18,7 @@
                             <p><small>Time: {{ now()->toDayDateTimeString() }}</small></p>
                         </div>
 
-                        <form method="POST" action="{{ route('order.product') }}" class="orderForm">
+                        <form method="POST" action="{{ route('order-rtt-product') }}" class="orderRttForm">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <input type="hidden" name="is_trial_task" value="{{ $is_trial_task }}">
@@ -62,7 +62,7 @@
 
     <script>
         $(document).ready(function () {
-            $('.orderForm').on('submit', function (e) {
+            $('.orderRttForm').on('submit', function (e) {
                 e.preventDefault();
 
                 const $form = $(this);

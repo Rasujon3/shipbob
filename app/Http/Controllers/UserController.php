@@ -267,13 +267,13 @@ class UserController extends Controller
         }
 
         $orderCompletedCount = RTTOrder::where('user_id', $user?->id)
-            ->where('status', 'Complete')
+            ->where('status','!=', 'Complete')
             ->count();
 
         $commissionSum = RTTOrder::where('user_id', $user?->id)
-            ->where('status', 'Complete')
+            ->where('status','!=', 'Complete')
             ->join('r_t_t_products', 'r_t_t_orders.rtt_product_id', '=', 'r_t_t_products.id')
-            ->sum(DB::raw('CAST(r_t_t_products.commission AS DECIMAL(10,2))'));
+            ->sum(DB::raw('CAST(r_t_t_orders.amount AS DECIMAL(10,2))'));
 
         $completedOrders = RTTOrder::where('user_id', $user?->id)
 //            ->where('is_completed', false)
@@ -303,7 +303,7 @@ class UserController extends Controller
             ->where('status', 'Incomplete')
             ->exists();
 
-        return view('user.setoff', compact(
+        return view('user.rttSetOff', compact(
             'reserveData',
             'frozenAmount',
             'orderCompletedCount',
@@ -714,7 +714,7 @@ class UserController extends Controller
                 ->where('status', 'Incomplete')
                 ->exists();
 
-            return view('user.orderProduct', compact(
+            return view('user.orderRttProduct', compact(
                 'products',
                 'orderedProductIds',
                 'is_trial_task',

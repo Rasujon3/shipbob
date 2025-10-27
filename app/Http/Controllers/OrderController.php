@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Http\Requests\OrderRttRequest;
 use App\Http\Requests\PackageRequest;
 use App\Models\AssignedTrialTask;
 use App\Models\AssignTask;
@@ -212,7 +213,7 @@ class OrderController extends Controller
             return redirect()->route('user-setoff')->with($notification);
         }
     }
-    public function rttStore(OrderRequest $request)
+    public function rttStore(OrderRttRequest $request)
     {
         DB::beginTransaction();
         try
@@ -227,7 +228,7 @@ class OrderController extends Controller
             RTTOrder::create([
                 'order_number' => $this->generateOrderNumber($user->uid, $productId),
                 'user_id' => $user->id,
-                'rtt_task_id' => $assignRTTTask->id,
+                'rtt_task_id' => $assignRTTTask->rtt_task_id,
                 'rtt_product_id' => $productId,
                 'amount' => rttProduct($productId)->commission,
                 'completed_at' => Carbon::now(),
@@ -250,7 +251,7 @@ class OrderController extends Controller
             $totalTaskCount = $assignRTTTask->num_of_tasks ? (int) $assignRTTTask->num_of_tasks : 0;
             if ($orderCompletedCount >= $totalTaskCount) {
                 // Mark RTT task as complete
-                $assignRTTTask->status = 'Complete';
+                $assignRTTTask->status = 'Completed';
                 $assignRTTTask->save();
 
                 // Reset user balance
@@ -268,6 +269,7 @@ class OrderController extends Controller
             return redirect()->route('user-setoff')->with($notification);
 
         } catch(Exception $e) {
+            DB::rollback();
             // Log the error
             Log::error('Error in storing order: ', [
                 'message' => $e->getMessage(),
@@ -280,7 +282,7 @@ class OrderController extends Controller
                 'message' => 'Something went wrong!!!',
                 'alert-type' => 'error'
             );
-            DB::rollback();
+
             return redirect()->route('user-setoff')->with($notification);
         }
     }

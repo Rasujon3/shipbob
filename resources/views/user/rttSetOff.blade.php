@@ -6,7 +6,7 @@
 
           @include('user.partials.setoff.sliderSection')
 
-            <form action="{{ route('product-order') }}" method="POST">
+          <form action="{{ route('rtt-product-order') }}" method="POST">
                 @csrf
                 <input type="hidden" name="is_trial_task" value="{{ $is_trial_task }}">
                 <input type="hidden" name="task_id" value="{{ $task_id }}">
