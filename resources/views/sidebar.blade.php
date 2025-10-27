@@ -502,7 +502,7 @@
                         <li class="nav-item">
                             <a
                                 href="{{ route('rtt-products.index') }}"
-                                class="nav-link {{ request()->routeIs('rtt-products.index') ? 'active_nav_menu' : '' }}"
+                                class="nav-link {{ request()->routeIs('rtt-products.*') ? 'active_nav_menu' : '' }}"
                             >
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>RTT Products</p>
@@ -510,8 +510,8 @@
                         </li>
                         <li class="nav-item">
                             <a
-                                href="{{ route('welcome-bonuses.index') }}"
-                                class="nav-link {{ request()->routeIs('welcome-bonuses.index') ? 'active_nav_menu' : '' }}"
+                                href="{{ route('rtt-tasks.index') }}"
+                                class="nav-link {{ request()->routeIs('rtt-tasks.*') ? 'active_nav_menu' : '' }}"
                             >
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>RTT Tasks</p>

@@ -18,5 +18,6 @@ class Setting extends Model
         'company_name',
         'company_logo',
         'daily_task_limit',
+        'rtt_trial_balance',
     ];
 }

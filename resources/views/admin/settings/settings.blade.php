@@ -28,7 +28,7 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="{{url('settings-app')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('settings-app') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="row">
@@ -89,6 +89,27 @@
                                     value="{{ old('daily_task_limit', ($setting && $setting->daily_task_limit !== null) ? $setting->daily_task_limit : '') }}"
                                 >
                                 @error('daily_task_limit')
+                                    <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="rtt_trial_balance">
+                                    Round Trial Task Balance
+                                    <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="rtt_trial_balance"
+                                    class="form-control numericInput"
+                                    id="rtt_trial_balance"
+                                    placeholder="Round Trial Task Balance"
+                                    required=""
+                                    value="{{ old('rtt_trial_balance', ($setting && !empty($setting->rtt_trial_balance)) ? $setting->rtt_trial_balance : 0) }}"
+                                >
+                                @error('rtt_trial_balance')
                                     <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
                             </div>

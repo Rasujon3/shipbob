@@ -35,6 +35,7 @@ class SettingController extends Controller
                 'company_name' => $data ? $data->company_name : null,
                 'img_url' => $data ? $data->company_logo : null,
                 'daily_task_limit' => $data ? $data->daily_task_limit : null,
+                'rtt_trial_balance' => $data ? $data->rtt_trial_balance : 0,
             ];
 
             // Handle file upload
@@ -54,6 +55,7 @@ class SettingController extends Controller
                         'telegram_group_link' => $request->telegram_group_link ?? $defaults['telegram_group_link'],
                         'company_name' => $request->company_name ?? $defaults['company_name'],
                         'daily_task_limit' => $request->daily_task_limit ?? $defaults['daily_task_limit'],
+                        'rtt_trial_balance' => $request->rtt_trial_balance ?? $defaults['rtt_trial_balance'],
                         'company_logo' => $request->hasFile('company_logo') ? $img_url : $defaults['img_url'],
                     ]
                 );
@@ -67,6 +69,7 @@ class SettingController extends Controller
                         'telegram_group_link' => $request->telegram_group_link ?? $defaults['telegram_group_link'],
                         'company_name' => $request->company_name ?? $defaults['company_name'],
                         'daily_task_limit' => $request->daily_task_limit ?? $defaults['daily_task_limit'],
+                        'rtt_trial_balance' => $request->rtt_trial_balance ?? $defaults['rtt_trial_balance'],
                         'company_logo' => $request->hasFile('company_logo') ? $img_url : $defaults['img_url'],
                     ]
                 );

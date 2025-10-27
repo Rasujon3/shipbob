@@ -17,6 +17,7 @@ use App\Http\Controllers\PackageAssignController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RTTProductController;
+use App\Http\Controllers\RTTTaskController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\TaskAssignController;
@@ -175,6 +176,7 @@ Route::middleware('admin_auth')->group(function () {
 
     Route::prefix('rtt')->group(function () {
         Route::resource('rtt-products', RTTProductController::class);
+        Route::resource('rtt-tasks', RTTTaskController::class);
     });
 });
 
