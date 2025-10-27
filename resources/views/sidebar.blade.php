@@ -519,8 +519,8 @@
                         </li>
                         <li class="nav-item">
                             <a
-                                href="{{ route('welcome-bonuses.index') }}"
-                                class="nav-link {{ request()->routeIs('welcome-bonuses.index') ? 'active_nav_menu' : '' }}"
+                                href="{{ route('rtt-assign-tasks.index') }}"
+                                class="nav-link {{ request()->routeIs('rtt-assign-tasks.*') ? 'active_nav_menu' : '' }}"
                             >
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>RTT Assign Tasks</p>
