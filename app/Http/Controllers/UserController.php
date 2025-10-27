@@ -26,6 +26,9 @@ use App\Models\LoginPageContent;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\RTTAssignTask;
+use App\Models\RTTOrder;
+use App\Models\RTTProduct;
 use App\Models\SetOffVideoSectionContent;
 use App\Models\Setting;
 use App\Models\ShippingSectionContent;
@@ -71,6 +74,18 @@ class UserController extends Controller
         return view('user.profile');
     }
     public function setoff()
+    {
+        $assignRTTTask = RTTAssignTask::where('user_id', Auth::user()->id)
+            ->where('status', 'Incomplete')
+            ->first();
+
+        if ($assignRTTTask) {
+            return $this->rttSetOff();
+        }
+
+        return $this->taskSetOff();
+    }
+    public function taskSetOff()
     {
         $user = User::with('frozenAmount', 'assignTrialTask')->where('id', Auth::user()->id)->first();
 
@@ -189,6 +204,10 @@ class UserController extends Controller
 
         $is_trial_task = !(count($assignTasks) > 0);
 
+        $isAssignRTTTask = RTTAssignTask::where('user_id', $user?->id)
+            ->where('status', 'Incomplete')
+            ->exists();
+
         return view('user.setoff', compact(
             'reserveData',
             'frozenAmount',
@@ -200,7 +219,103 @@ class UserController extends Controller
             'video',
             'sliders',
             'is_trial_task',
-            'task_id'
+            'task_id',
+            'isAssignRTTTask'
+        ));
+    }
+    public function rttSetOff()
+    {
+        $user = User::with('frozenAmount', 'assignTrialTask', 'rttOrder')
+            ->where('id', Auth::user()->id)
+            ->first();
+
+        # $frozenAmount = $user?->frozenAmount?->amount ?? '0';
+        $frozenAmount = 0;
+        // Completed Task Count
+        $completedTaskCount = 0;
+
+        $is_trial_task = null;
+        $task_id = null;
+
+        $rttTaskId = null;
+
+        $assignRTTTask = RTTAssignTask::where('user_id', $user?->id)
+            ->where('status', 'Incomplete')
+            ->first();
+
+        if ($assignRTTTask) {
+            $rttTaskId = $assignRTTTask->id;
+        }
+
+        $completedTaskCount = RTTOrder::where('user_id', $user?->id)
+            ->where('rtt_task_id', $rttTaskId)
+            # ->where('status', 'Complete')
+            ->count();
+
+        // Check & Calculate Reserved Amount
+        $reserveData = null;
+        $frozenData = FrozenAmount::where('user_id', $user?->id)->first();
+
+        if ($frozenData && $frozenData->task_will_block == $completedTaskCount) {
+            if (count($user?->frozenAmount) > 0) {
+                foreach ($user?->frozenAmount as $item) {
+                    $number = (int) ($item?->amount ?? 0);
+                    $frozenAmount += $number;
+                    $reserveData = $frozenData;
+                }
+            }
+        }
+
+        $orderCompletedCount = RTTOrder::where('user_id', $user?->id)
+            ->where('status', 'Complete')
+            ->count();
+
+        $commissionSum = RTTOrder::where('user_id', $user?->id)
+            ->where('status', 'Complete')
+            ->join('r_t_t_products', 'r_t_t_orders.rtt_product_id', '=', 'r_t_t_products.id')
+            ->sum(DB::raw('CAST(r_t_t_products.commission AS DECIMAL(10,2))'));
+
+        $completedOrders = RTTOrder::where('user_id', $user?->id)
+//            ->where('is_completed', false)
+            ->whereDate('completed_at', Carbon::today())
+            ->with('rttProduct')
+            ->latest()
+            ->get();
+
+        // Ordered product IDs
+        $orderedProductIds = $completedOrders->pluck('rtt_product_id')->toArray();
+
+        // Pending products (not ordered yet)
+        # $pendingProducts = [];
+        $pendingProducts = RTTProduct::whereNotIn('id', $orderedProductIds)->latest()->limit(1)->get();
+
+        // Task count
+        $totalTaskCount = 0;
+
+        if ($assignRTTTask) {
+            $totalTaskCount += $assignRTTTask->num_of_tasks ? (int)$assignRTTTask->num_of_tasks : 0;
+        }
+
+        $video = SetOffVideoSectionContent::first();
+        $sliders = Slider::get();
+
+        $isAssignRTTTask = RTTAssignTask::where('user_id', $user?->id)
+            ->where('status', 'Incomplete')
+            ->exists();
+
+        return view('user.setoff', compact(
+            'reserveData',
+            'frozenAmount',
+            'orderCompletedCount',
+            'commissionSum',
+            'completedOrders',
+            'totalTaskCount',
+            'pendingProducts',
+            'video',
+            'sliders',
+            'is_trial_task',
+            'task_id',
+            'isAssignRTTTask'
         ));
     }
     public function event()
@@ -497,10 +612,113 @@ class UserController extends Controller
 
             $is_trial_task = !(count($assignTasks) > 0);
 
+            $isAssignRTTTask = RTTAssignTask::where('user_id', $user?->id)
+                ->where('status', 'Incomplete')
+                ->exists();
+
             return view('user.orderProduct', compact(
                 'products',
                 'orderedProductIds',
                 'is_trial_task',
+                'isAssignRTTTask',
+                'task_id'
+            ));
+        } catch(Exception $e) {
+            DB::rollback();
+            // Log the error
+            Log::error('Error in showing productOrder: ', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            $notification=array(
+                'message' => 'Something went wrong!!!',
+                'alert-type' => 'error'
+            );
+            return redirect()->back()->with($notification);
+        }
+    }
+    public function rttProductOrder(Request $request)
+    {
+        $isTrialTask = $request->get('is_trial_task');
+        $taskId = $request->get('task_id');
+
+        try
+        {
+            $user = auth()->user();
+
+            $assignRTTTask = RTTAssignTask::where('user_id', $user->id)
+                ->where('status', 'Incomplete')
+                ->first();
+
+            // check trial task assign
+            $checkTrialTaskAssign = AssignedTrialTask::where('user_id', $user->id)->first();
+            if (!$checkTrialTaskAssign) {
+                $notification = [
+                    'message' => 'You are not assigned on Trial Task. Please contact with support team.',
+                    'alert-type' => 'error'
+                ];
+
+                return redirect()->back()->with($notification);
+            }
+
+            $completedTaskCount = RTTOrder::where('user_id', $user?->id)
+                ->where('rtt_task_id', $assignRTTTask->id)
+                # ->where('status', 'Complete')
+                ->count();
+
+            // Calculate & check Gift
+            $giftData = Gift::where('user_id', $user->id)->first();
+            if ($giftData && $giftData->task_will_block == $completedTaskCount) {
+                $notification = [
+                    'message' => 'Congratulation. You have a gift box.',
+                    'alert-type' => 'success'
+                ];
+
+                return redirect()->route('gift-box')->with($notification);
+            }
+
+            // Calculate & check Reserved Amount
+            $frozenData = FrozenAmount::where('user_id', $user->id)->first();
+            if ($frozenData && $frozenData->task_will_block == $completedTaskCount) {
+                $notification = [
+                    'message' => 'Insufficient balance. Please contact with support team.',
+                    'alert-type' => 'error'
+                ];
+
+                return redirect()->back()->with($notification);
+            }
+
+
+            # $limit = $totalTaskCount - $completedTaskCount;
+
+            $orderedProductIds = RTTOrder::where('user_id', $user->id)
+//                ->where('is_completed', false)
+                ->whereDate('completed_at', Carbon::today())
+                ->pluck('rtt_product_id')
+                ->toArray();
+
+            $products = RTTProduct::latest()
+                ->whereNotIn('id', $orderedProductIds)
+                # ->limit($limit)
+                ->latest()
+                ->limit(1)
+                ->get();
+
+            $is_trial_task = null;
+            $task_id = null;
+
+            $isAssignRTTTask = RTTAssignTask::where('user_id', $user?->id)
+                ->where('status', 'Incomplete')
+                ->exists();
+
+            return view('user.orderProduct', compact(
+                'products',
+                'orderedProductIds',
+                'is_trial_task',
+                'isAssignRTTTask',
                 'task_id'
             ));
         } catch(Exception $e) {

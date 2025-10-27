@@ -201,7 +201,11 @@ Route::prefix('user')->middleware('user_auth')->group(function () {
 
     Route::post('/product-order', [UserController::class, 'productOrder'])->name('product-order');
 
+    Route::post('/rtt-product-order', [UserController::class, 'rttProductOrder'])->name('rtt-product-order');
+
     Route::post('/order-product', [OrderController::class, 'store'])->name('order.product');
+
+    Route::post('/rtt-order-product', [OrderController::class, 'rttStore'])->name('rtt.order.product');
 
     Route::get('/cash-in', [UserController::class, 'cashIn'])->name('user-cash-in');
 

@@ -140,4 +140,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(FrozenAmount::class);
     }
+    public function rttOrder()
+    {
+        return $this->hasMany(RTTOrder::class);
+    }
 }

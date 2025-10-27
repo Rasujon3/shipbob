@@ -18,7 +18,11 @@
                             <p><small>Time: {{ now()->toDayDateTimeString() }}</small></p>
                         </div>
 
-                        <form method="POST" action="{{ route('order.product') }}" class="orderForm">
+                        @if($isAssignRTTTask)
+                            <form method="POST" action="{{ route('rtt.order.product') }}" class="orderForm">
+                        @else
+                            <form method="POST" action="{{ route('order.product') }}" class="orderForm">
+                        @endif
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <input type="hidden" name="is_trial_task" value="{{ $is_trial_task }}">

@@ -9,6 +9,8 @@ use App\Models\AssignTask;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\RTTAssignTask;
+use App\Models\RTTOrder;
 use App\Models\TrialTask;
 use App\Models\User;
 use App\Models\WelcomeBonus;
@@ -184,6 +186,78 @@ class OrderController extends Controller
             }
 
             $message = $assignedTrialTask->status === 'completed' && $orderCompletedCount === $totalTaskCount ? 'Order placed successfully & complete the task.' : 'Order placed successfully.';
+            $notification = array(
+                'message' => $message,
+                'alert-type' => 'success'
+            );
+
+            DB::commit();
+
+            return redirect()->route('user-setoff')->with($notification);
+
+        } catch(Exception $e) {
+            // Log the error
+            Log::error('Error in storing order: ', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            $notification=array(
+                'message' => 'Something went wrong!!!',
+                'alert-type' => 'error'
+            );
+            DB::rollback();
+            return redirect()->route('user-setoff')->with($notification);
+        }
+    }
+    public function rttStore(OrderRequest $request)
+    {
+        DB::beginTransaction();
+        try
+        {
+            $user = auth()->user();
+            $productId = $request->input('product_id');
+
+            $assignRTTTask = RTTAssignTask::where('user_id', $user->id)
+                ->where('status', 'Incomplete')
+                ->first();
+
+            RTTOrder::create([
+                'order_number' => $this->generateOrderNumber($user->uid, $productId),
+                'user_id' => $user->id,
+                'rtt_task_id' => $assignRTTTask->id,
+                'rtt_product_id' => $productId,
+                'amount' => rttProduct($productId)->commission,
+                'completed_at' => Carbon::now(),
+            ]);
+
+            $user->main_balance = $user->main_balance == NULL
+                ? rttProduct($productId)->commission
+                : round($user->main_balance + rttProduct($productId)->commission, 2);
+            $user->update();
+
+            $welcomeBonus = WelcomeBonus::where('user_id', $user->id)
+                ->where('status', 'Incomplete')
+                ->first();
+
+            if ($welcomeBonus) {
+                $this->updateWelcomeBonus($welcomeBonus);
+            }
+
+            $orderCompletedCount = RTTOrder::where('user_id', $user->id)->count();
+            $totalTaskCount = $assignRTTTask->num_of_tasks ? (int) $assignRTTTask->num_of_tasks : 0;
+            if ($orderCompletedCount >= $totalTaskCount) {
+                // Mark RTT task as complete
+                $assignRTTTask->status = 'Complete';
+                $assignRTTTask->save();
+
+                // Reset user balance
+                User::where('id', $user->id)->update(['balance' => 0]);
+            }
+
+            $message = $orderCompletedCount === $totalTaskCount ? 'Order placed successfully & complete the task.' : 'Order placed successfully.';
             $notification = array(
                 'message' => $message,
                 'alert-type' => 'success'

@@ -1,5 +1,7 @@
 <?php
- use App\Models\Setting;
+
+use App\Models\RTTProduct;
+use App\Models\Setting;
  use App\Models\User;
  use App\Models\Product;
  use App\Models\Package;
@@ -19,6 +21,11 @@
  function product($id)
  {
  	$product = Product::findorfail($id);
+ 	return $product;
+ }
+ function rttProduct($id)
+ {
+ 	$product = RTTProduct::findorfail($id);
  	return $product;
  }
 
