@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->decimal('rtt_trial_balance',10, 2)->nullable()->default(0)->after('daily_task_limit');
+            $table->decimal('rtt_trial_balance',10, 2)->nullable()->default(10000)->after('daily_task_limit');
         });
     }
 
