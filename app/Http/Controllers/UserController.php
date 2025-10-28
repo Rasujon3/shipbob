@@ -21,6 +21,7 @@ use App\Models\GlobalInfo;
 use App\Models\GrowthSectionContent;
 use App\Models\HelpCenter;
 use App\Models\HeroSectionContent;
+use App\Models\InvitationCode;
 use App\Models\Level;
 use App\Models\LoginPageContent;
 use App\Models\Order;
@@ -422,6 +423,9 @@ class UserController extends Controller
             'withdraw_password' => 'required|string|min:6',
             'invitation_code' => 'required|string|exists:invitation_codes,code',
         ]);
+
+        $invitationCodeData = InvitationCode::where('code', $request->invitation_code)->first();
+
         try {
             // Create new user
             $user = new User();
@@ -434,6 +438,7 @@ class UserController extends Controller
             # $user->withdraw_acc_number = $request->withdraw_acc_number;
             $user->withdraw_password = $request->withdraw_password;
             $user->invitation_code = $request->invitation_code;
+            $user->invited_user_id = $invitationCodeData->user_id;
             # $user->balance = setting()->trial_amount;
             $user->status = 'Inactive';
             $user->save();

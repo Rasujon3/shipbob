@@ -94,10 +94,13 @@
                         <div class="col-md-6 mb-3">
                             <label><strong>Invited User:</strong></label>
                             <p class="form-control-plaintext border p-2 bg-light">
-                                {{ ($updateUser?->invitation_code && $updateUser?->inviteUser?->user)
-                                    ? $updateUser?->inviteUser?->user?->username . ' (' . $updateUser?->inviteUser?->user?->uid . ')'
-                                    : 'N/A'
-                                }}
+                                @if ($updateUser?->inviteUser?->user)
+                                    {{ $updateUser->inviteUser->user->username }} ({{ $updateUser->inviteUser->user->uid }})
+                                @elseif ($updateUser?->invitedUserID && $updateUser->invitedUserID->username)
+                                    {{ $updateUser->invitedUserID->username }} ({{ $updateUser->invitedUserID->uid }})
+                                @else
+                                    N/A
+                                @endif
                             </p>
                         </div>
 

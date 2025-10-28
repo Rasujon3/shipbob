@@ -27,6 +27,7 @@ class User extends Authenticatable
         'password',
         'withdraw_password',
         'invitation_code',
+        'invited_user_id',
         'balance',
         'amount',
         'status',
@@ -147,5 +148,9 @@ class User extends Authenticatable
     public function rttAssignTask()
     {
         return $this->hasMany(RTTAssignTask::class);
+    }
+    public function invitedUserID()
+    {
+        return $this->hasOne(__CLASS__, 'id', 'invited_user_id');
     }
 }
