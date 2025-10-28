@@ -7,6 +7,7 @@ use App\Models\AssignedTrialTask;
 use App\Models\AssignTask;
 use App\Models\Order;
 use App\Models\Paymentmethod;
+use App\Models\RTTAssignTask;
 use App\Models\Setting;
 use App\Models\WelcomeBonus;
 use Exception;
@@ -154,6 +155,7 @@ class PaymentmethodController extends Controller
 
             $incompleteTrialTask = false;
             $incompleteTask = false;
+            $incompleteRttTask = false;
 
             $incompleteTrialTask = AssignedTrialTask::where('user_id', $user->id)
                                         ->where('status', '!=', 'completed')
@@ -163,7 +165,11 @@ class PaymentmethodController extends Controller
                                         ->where('is_completed', '!=', true)
                                         ->exists();
 
-            if($incompleteTrialTask || $incompleteTask) {
+            $incompleteRttTask = RTTAssignTask::where('user_id', $user->id)
+                                        ->where('status', 'Incomplete')
+                                        ->exists();
+
+            if($incompleteTrialTask || $incompleteTask || $incompleteRttTask) {
                 return response()->json(['status'=>false, 'message'=>'You have some incomplete tasks. Please complete them before making a withdrawal.']);
             }
             // Daily order completed count check
