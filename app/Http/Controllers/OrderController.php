@@ -247,14 +247,22 @@ class OrderController extends Controller
                 $this->updateWelcomeBonus($welcomeBonus);
             }
 
-            $orderCompletedCount = RTTOrder::where('user_id', $user->id)->count();
+            $orderCompletedCount = RTTOrder::where('user_id', $user->id)
+                ->where('rtt_task_id', $assignRTTTask->rtt_task_id)
+                ->count();
+
             $totalTaskCount = $assignRTTTask->num_of_tasks ? (int) $assignRTTTask->num_of_tasks : 0;
             if ($orderCompletedCount >= $totalTaskCount) {
-                // Mark RTT task as complete
+                // 1. Mark RTT task as complete
                 $assignRTTTask->status = 'Completed';
                 $assignRTTTask->save();
 
-                // Reset user balance
+                // 2. Update RTT order status
+                RTTOrder::where('user_id', $user->id)
+                    ->where('rtt_task_id', $assignRTTTask->rtt_task_id)
+                    ->update(['status' => 'Complete']);
+
+                // 3. Reset user balance
                 User::where('id', $user->id)->update(['balance' => 0]);
             }
 
