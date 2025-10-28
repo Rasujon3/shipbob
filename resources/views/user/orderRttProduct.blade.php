@@ -26,9 +26,9 @@
 
                             <button
                                 type="submit"
-                                class="btn w-100 btn-dark submit-btn" {{ $isOrdered ? 'disabled' : '' }}
+                                class="btn w-100 btn-dark submit-btn"
                             >
-                                {{ $isOrdered ? 'Already Ordered' : 'Place Order' }}
+                                Place Order
                             </button>
 
                             <!-- 1st time hidden this button  -->

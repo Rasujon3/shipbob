@@ -144,4 +144,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(RTTOrder::class);
     }
+    public function rttAssignTask()
+    {
+        return $this->hasMany(RTTAssignTask::class);
+    }
 }

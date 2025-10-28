@@ -36,7 +36,7 @@ class UpdateUserController extends Controller
         {
             if($request->ajax()){
 
-               $data = User::with('assignTask', 'order', 'trialTaskAssign')
+               $data = User::with('assignTask', 'order', 'trialTaskAssign', 'rttAssignTask', 'rttOrder')
                    ->where('role', 'user')
                    ->select('*')
                    ->latest();
@@ -106,6 +106,30 @@ class UpdateUserController extends Controller
                             return $location;
                         })
 
+                        /*
+                        ->addColumn('total_assigned_rtt', function($row){
+                            $total = $row->rttAssignTask->sum('num_of_tasks');
+                            return $total;
+                        })
+
+                        ->addColumn('completed_rtt_task', function($row){
+                            $completed = $row->rttOrder->count();
+                            return $completed;
+                        })
+
+                        ->addColumn('remaining_rtt_task', function($row){
+                            $total = $row->rttAssignTask->sum('num_of_tasks');
+                            $completed = $row->rttOrder->count();
+                            return $total - $completed;
+                        })
+                        */
+
+                        ->addColumn('view_rtt', function($row){
+                            return ' <button type="button" class="btn btn-warning btn-sm view-rtt" data-id="'.$row->id.'">
+                                        <i class="fa fa-tasks"></i> RTT
+                                     </button>';
+                        })
+
                         ->addColumn('status', function($row){
                             return '<label class="switch"><input class="' . ($row->status === 'Active' ? 'active-user' : 'decline-user') . '" id="status-user-update"  type="checkbox" ' . ($row->status === 'Active' ? 'checked' : '') . ' data-id="'.$row->id.'"><span class="slider round"></span></label>';
                         })
@@ -146,6 +170,10 @@ class UpdateUserController extends Controller
                             'total_assigned_task',
                             'completed_task',
                             'remaining_task',
+//                            'total_assigned_rtt',
+//                            'completed_rtt_task',
+//                            'remaining_rtt_task',
+                            'view_rtt',
                             'action'
                         ])
                         ->make(true);
@@ -388,6 +416,32 @@ class UpdateUserController extends Controller
 
         return redirect()->route('updateUser.index')->with($notification);
     }
+
+    public function rttStats($id)
+    {
+        try {
+            $user = User::with('rttAssignTask', 'rttOrder')->findOrFail($id);
+
+            $totalAssigned = $user->rttAssignTask->sum('num_of_tasks');
+            $completed = $user->rttOrder->count();
+            $remaining = $totalAssigned - $completed;
+
+            return response()->json([
+                'status' => true,
+                'data' => [
+                    'total_assigned_rtt' => $totalAssigned,
+                    'completed_rtt_task' => $completed,
+                    'remaining_rtt_task' => $remaining,
+                ]
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     private function storeFile($file)
     {
         // Define the directory path

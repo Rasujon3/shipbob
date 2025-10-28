@@ -38,6 +38,13 @@
                                 <th>Total Assigned Task</th>
                                 <th>Completed Task</th>
                                 <th>Remaining Task</th>
+
+{{--                                <th>Total Assigned RTT Task</th>--}}
+{{--                                <th>Completed RTT Task</th>--}}
+{{--                                <th>Remaining RTT Task</th>--}}
+
+                                <th>View RTT</th>
+
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -64,6 +71,39 @@
 
                 <div class="modal-body" id="userViewModalContent">
                     <!-- AJAX দিয়ে কনটেন্ট এখানে আসবে -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal -->
+
+    <!-- RTT Modal -->
+    <div class="modal fade" id="rttModal" tabindex="-1" role="dialog" aria-labelledby="rttModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="rttModalLabel">RTT Task Summary</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered mb-0">
+                        <tbody>
+                        <tr>
+                            <th>Total Assigned RTT</th>
+                            <td id="rttTotalAssigned">—</td>
+                        </tr>
+                        <tr>
+                            <th>Completed RTT Tasks</th>
+                            <td id="rttCompleted">—</td>
+                        </tr>
+                        <tr>
+                            <th>Remaining RTT Tasks</th>
+                            <td id="rttRemaining">—</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -100,6 +140,13 @@
 		            {data: 'total_assigned_task', name: 'total_assigned_task'},
 		            {data: 'completed_task', name: 'completed_task'},
 		            {data: 'remaining_task', name: 'remaining_task'},
+
+		            // {data: 'total_assigned_rtt', name: 'total_assigned_rtt'},
+		            // {data: 'completed_rtt_task', name: 'completed_rtt_task'},
+		            // {data: 'remaining_rtt_task', name: 'remaining_rtt_task'},
+
+		            {data: 'view_rtt', name: 'view_rtt'},
+
                     {data: 'status', name: 'status'},
 		            {data: 'action', name: 'action', orderable: false, searchable: false},
 		        ]
@@ -165,6 +212,39 @@
                 },
                 error: function() {
                     alert('Failed to load user details.');
+                }
+            });
+        });
+
+        $(document).on('click', '.view-rtt', function (e) {
+            e.preventDefault();
+            let userId = $(this).data('id');
+
+            $.ajax({
+                url: `/updateUser/${userId}/rtt-stats`,
+                type: 'GET',
+                beforeSend: function() {
+                    $('#rttTotalAssigned').text('Loading...');
+                    $('#rttCompleted').text('Loading...');
+                    $('#rttRemaining').text('Loading...');
+                },
+                success: function(response) {
+                    if (response.status) {
+                        $('#rttTotalAssigned').text(response.data.total_assigned_rtt);
+                        $('#rttCompleted').text(response.data.completed_rtt_task);
+                        $('#rttRemaining').text(response.data.remaining_rtt_task);
+                    } else {
+                        $('#rttTotalAssigned').text('Error');
+                        $('#rttCompleted').text('Error');
+                        $('#rttRemaining').text('Error');
+                    }
+                    $('#rttModal').modal('show');
+                },
+                error: function(xhr) {
+                    $('#rttTotalAssigned').text('Error');
+                    $('#rttCompleted').text('Error');
+                    $('#rttRemaining').text('Error');
+                    $('#rttModal').modal('show');
                 }
             });
         });

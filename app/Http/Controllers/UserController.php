@@ -244,12 +244,12 @@ class UserController extends Controller
             ->first();
 
         if ($assignRTTTask) {
-            $rttTaskId = $assignRTTTask->id;
+            $rttTaskId = $assignRTTTask->rtt_task_id;
         }
 
         $completedTaskCount = RTTOrder::where('user_id', $user?->id)
             ->where('rtt_task_id', $rttTaskId)
-            # ->where('status', 'Complete')
+            ->where('status', 'Incomplete')
             ->count();
 
         // Check & Calculate Reserved Amount
@@ -267,7 +267,8 @@ class UserController extends Controller
         }
 
         $orderCompletedCount = RTTOrder::where('user_id', $user?->id)
-            ->where('status','!=', 'Complete')
+            ->where('rtt_task_id', $rttTaskId)
+            ->where('status', 'Incomplete')
             ->count();
 
         $commissionSum = RTTOrder::where('user_id', $user?->id)
@@ -665,8 +666,8 @@ class UserController extends Controller
             }
 
             $completedTaskCount = RTTOrder::where('user_id', $user?->id)
-                ->where('rtt_task_id', $assignRTTTask->id)
-                # ->where('status', 'Complete')
+                ->where('rtt_task_id', $assignRTTTask->rtt_task_id)
+                ->where('status', 'Incomplete')
                 ->count();
 
             // Calculate & check Gift

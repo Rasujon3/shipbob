@@ -7,6 +7,7 @@ use App\Models\AssignedTrialTask;
 use App\Models\Gift;
 use App\Models\GiftBox;
 use App\Models\Order;
+use App\Models\RTTOrder;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -62,7 +63,15 @@ class GiftBoxController extends Controller
                             #->where('task_id', '!=', null)
                             ->where('is_completed', false)
                             ->count();
-                        $checked = $task_will_block == $completedTasksCount ? 'checked' : '';
+
+                        $completedRttTasksCount = RTTOrder::where('user_id', $userId)
+                            ->where('status', 'Incomplete')
+                            ->count();
+
+                        $checked = (($task_will_block == $completedTasksCount) || ($task_will_block == $completedRttTasksCount))
+                            ? 'checked'
+                            : '';
+
                         return '<label class="switch">
 //                                    <input class="decline-cashin" id="status-cashin-update" type="checkbox" ' . $checked . ' ' . 'disabled' . ' data-id="' . $row->id . '">
 //                                    <span class="slider round"></span>

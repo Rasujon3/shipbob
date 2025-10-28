@@ -249,6 +249,7 @@ class OrderController extends Controller
 
             $orderCompletedCount = RTTOrder::where('user_id', $user->id)
                 ->where('rtt_task_id', $assignRTTTask->rtt_task_id)
+                ->where('status', 'Incomplete')
                 ->count();
 
             $totalTaskCount = $assignRTTTask->num_of_tasks ? (int) $assignRTTTask->num_of_tasks : 0;

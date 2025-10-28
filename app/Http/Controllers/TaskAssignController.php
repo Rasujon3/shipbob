@@ -6,6 +6,7 @@ use App\Http\Requests\TaskAssignRequest;
 use App\Models\AssignedTrialTask;
 use App\Models\AssignTask;
 use App\Models\Order;
+use App\Models\RTTAssignTask;
 use App\Models\Task;
 use App\Models\User;
 use Exception;
@@ -161,6 +162,19 @@ class TaskAssignController extends Controller
                 return redirect()->back()->with($notification);
             }
             */
+
+            $existingIncompleteRttTask = RTTAssignTask::where('user_id', $request->user_id)
+                ->where('status', 'Incomplete')
+                ->exists();
+
+            if ($existingIncompleteRttTask) {
+                $notification = array(
+                    'message' => "This user already has an incomplete Round Trial Task assigned.",
+                    'alert-type' => 'error'
+                );
+                return redirect()->back()->with($notification);
+            }
+
             $taskInfo = Task::where('id', $request->task_id)->first();
 
             $taskAssign = new AssignTask();
