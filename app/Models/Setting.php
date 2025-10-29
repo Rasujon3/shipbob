@@ -19,5 +19,6 @@ class Setting extends Model
         'company_logo',
         'daily_task_limit',
         'rtt_trial_balance',
+        'is_site_active',
     ];
 }

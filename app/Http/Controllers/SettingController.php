@@ -18,6 +18,7 @@ class SettingController extends Controller
     public function settings()
     {
         $setting = Setting::first();
+//        dd($setting->is_site_active);
         return view('admin.settings.settings',compact('setting'));
     }
     public function settingApp(Request $request)
@@ -36,6 +37,7 @@ class SettingController extends Controller
                 'img_url' => $data ? $data->company_logo : null,
                 'daily_task_limit' => $data ? $data->daily_task_limit : null,
                 'rtt_trial_balance' => $data ? $data->rtt_trial_balance : 0,
+                'is_site_active' => $data ? $data->is_site_active : 'Active',
             ];
 
             // Handle file upload
@@ -56,6 +58,7 @@ class SettingController extends Controller
                         'company_name' => $request->company_name ?? $defaults['company_name'],
                         'daily_task_limit' => $request->daily_task_limit ?? $defaults['daily_task_limit'],
                         'rtt_trial_balance' => $request->rtt_trial_balance ?? $defaults['rtt_trial_balance'],
+                        'is_site_active' => $request->is_site_active ?? $defaults['is_site_active'],
                         'company_logo' => $request->hasFile('company_logo') ? $img_url : $defaults['img_url'],
                     ]
                 );
@@ -70,6 +73,7 @@ class SettingController extends Controller
                         'company_name' => $request->company_name ?? $defaults['company_name'],
                         'daily_task_limit' => $request->daily_task_limit ?? $defaults['daily_task_limit'],
                         'rtt_trial_balance' => $request->rtt_trial_balance ?? $defaults['rtt_trial_balance'],
+                        'is_site_active' => $request->is_site_active ?? $defaults['is_site_active'],
                         'company_logo' => $request->hasFile('company_logo') ? $img_url : $defaults['img_url'],
                     ]
                 );

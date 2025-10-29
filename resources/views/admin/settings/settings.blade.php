@@ -76,7 +76,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="daily_task_limit">Daily Task Limit (Per Day) <span class="required">*</span></label>
                                 <input
@@ -94,7 +94,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="rtt_trial_balance">
                                     Round Trial Task Balance
@@ -111,6 +111,20 @@
                                 >
                                 @error('rtt_trial_balance')
                                     <span class="alert alert-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="is_site_active">Is Site Active <span class="required">*</span></label>
+                                <select class="form-control select2bs4" name="is_site_active" id="is_site_active" required="">
+                                    <option value="" selected="" disabled="">Select One</option>
+                                    <option value="Active" @if($setting->is_site_active === 'Active') selected @endif>Active</option>
+                                    <option value="Inactive" @if($setting->is_site_active === 'Inactive') selected @endif>Inactive</option>
+                                </select>
+                                @error('is_site_active')
+                                <span class="alert alert-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>

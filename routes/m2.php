@@ -37,7 +37,7 @@ Route::post('check-withdraw-password', [PaymentmethodController::class, 'checkWi
 Route::get('/add-payment-method', [PaymentmethodController::class, 'addPaymentMethod']);
 
 Route::get('/cashout', [CashoutController::class, 'cashout']);
-Route::middleware('user_auth')->group(function () {
+Route::middleware(['check_site_status', 'user_auth'])->group(function () {
  Route::post('save-cashout', [CashoutController::class, 'saveCashOut']);
  Route::post('save-cashin', [CashoutController::class, 'saveCashIn']);
 });

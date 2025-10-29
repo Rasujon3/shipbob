@@ -185,12 +185,14 @@ Route::middleware('admin_auth')->group(function () {
     });
 });
 
-// user part
-Route::get('/user/login', [UserController::class, 'userLogin'])->name('login-user');
-Route::post('/user/login', [UserController::class, 'loginUser'])->name('user-login');
-Route::post('/user/sign-up', [UserController::class, 'signUp'])->name('user-sign-up');
+Route::middleware('check_site_status')->group(function () {
+    // user part
+    Route::get('/user/login', [UserController::class, 'userLogin'])->name('login-user');
+    Route::post('/user/login', [UserController::class, 'loginUser'])->name('user-login');
+    Route::post('/user/sign-up', [UserController::class, 'signUp'])->name('user-sign-up');
+});
 
-Route::prefix('user')->middleware('user_auth')->group(function () {
+Route::prefix('user')->middleware(['check_site_status', 'user_auth'])->group(function () {
 
     Route::get('/', [UserController::class, 'index'])->name('user-index');
 
