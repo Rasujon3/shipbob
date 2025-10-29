@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\RTTProduct;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -23,7 +24,8 @@ class DashboardController extends Controller
             $packageCount = Package::count();
             $productCount = Product::count();
             $eventCount = Event::count();
-    		return view('layouts.app', compact('userCount', 'packageCount', 'productCount', 'eventCount'));
+            $rttProductCount = RTTProduct::count();
+    		return view('layouts.app', compact('userCount', 'packageCount', 'productCount', 'eventCount', 'rttProductCount'));
     	} catch(Exception $e) {
 
                 $message = $e->getMessage();
